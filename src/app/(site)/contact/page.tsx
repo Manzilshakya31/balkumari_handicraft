@@ -73,12 +73,17 @@ export default function ContactPage() {
                   <p className="font-semibold text-brand-brown text-sm mb-1">
                     Address
                   </p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <a
+                    href={SITE_CONFIG.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground leading-relaxed hover:text-brand-maroon transition-colors"
+                  >
                     {SITE_CONFIG.address.street},{" "}
                     {SITE_CONFIG.address.city}{" "}
                     {SITE_CONFIG.address.postalCode},{" "}
                     {SITE_CONFIG.address.country}
-                  </p>
+                  </a>
                 </div>
               </div>
 
@@ -149,21 +154,33 @@ export default function ContactPage() {
             </div>
 
             {/* Google Maps embed */}
-            <div
-              className="rounded-2xl overflow-hidden border
-                border-brand-gold/20 h-[280px] bg-brand-cream"
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3533.2!2d85.3188!3d27.6644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDM5JzUxLjgiTiA4NcKwMTknMDcuNyJF!5e0!3m2!1sen!2snp!4v1234567890"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Balkumari Handicraft location map"
-                aria-label="Google Maps — Balkumari Handicraft, Thapahiti, Lalitpur"
-              />
+            <div className="space-y-2">
+              <div
+                className="rounded-2xl overflow-hidden border
+                  border-brand-gold/20 h-[280px] bg-brand-cream"
+              >
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3532.86!2d85.326306!3d27.6693428!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb198cd69d51fb%3A0x5fe7a83de4a9013b!2sBalkumari%20Handicraft!5e0!3m2!1sen!2snp!4v1750000000000"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Balkumari Handicraft location map"
+                  aria-label="Google Maps — Balkumari Handicraft, Thapahiti, Lalitpur"
+                />
+              </div>
+              <a
+                href={SITE_CONFIG.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 text-xs
+                  text-muted-foreground hover:text-brand-maroon transition-colors"
+              >
+                <MapPin size={12} />
+                Get Directions on Google Maps
+              </a>
             </div>
           </div>
 

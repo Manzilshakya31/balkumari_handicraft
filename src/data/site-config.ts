@@ -16,9 +16,10 @@ export const SITE_CONFIG = {
     countryCode: "NP",
   },
   coordinates: {
-    lat: 27.6644,
-    lng: 85.3188,
+    lat: 27.6693428,
+    lng: 85.326306,
   },
+  googleMapsUrl: "https://maps.app.goo.gl/ZrdXsfPsLSRF3AFn7",
   phone: "+977-9818706474",
   phoneDisplay: "+977 9818706474",
   whatsapp: "9779818706474",
@@ -29,9 +30,10 @@ export const SITE_CONFIG = {
     schema: "Su-Fr 09:00-18:00",
   },
   social: {
-    facebook: "",
+    facebook: "https://www.facebook.com/profile.php?id=61584424653114",
     instagram: "",
     youtube: "",
+    whatsapp: "9779818706474",
   },
   seo: {
     defaultTitle:

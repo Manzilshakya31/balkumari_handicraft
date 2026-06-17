@@ -4,13 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, ChevronDown, Phone, MessageCircle } from "lucide-react";
+import { Menu, Phone, MessageCircle } from "lucide-react";
 import { NAV_ITEMS } from "@/lib/navigation";
 import { SITE_CONFIG } from "@/data/site-config";
 import { cn } from "@/lib/utils";
@@ -18,53 +14,52 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const isHomePage = pathname === "/";
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
 
+  const solidHeader = isScrolled || !isHomePage;
+
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        isScrolled || !isHomePage
+        solidHeader
           ? "bg-white/97 backdrop-blur-sm shadow-sm border-b border-brand-gold/15"
           : "bg-transparent"
       )}
     >
-      {/* Top bar — phone and hours */}
+      {/* Top bar */}
       <div
         className={cn(
           "py-1.5 hidden md:block transition-all duration-300",
-          isScrolled || !isHomePage
+          solidHeader
             ? "bg-brand-maroon"
             : "bg-black/30 backdrop-blur-sm"
         )}
       >
-        <div className="container-custom flex justify-between items-center text-sm text-white">
-          <span className="text-brand-gold-light">
+        <div className="container-custom flex justify-between items-center text-sm">
+          <span className="text-brand-gold-light text-xs">
             {SITE_CONFIG.hours.display} · {SITE_CONFIG.hours.note}
           </span>
           <a
             href={`tel:${SITE_CONFIG.phone}`}
-            className="flex items-center gap-1.5 hover:text-brand-gold-light transition-colors"
+            className="flex items-center gap-1.5 text-white/80
+              hover:text-white transition-colors text-xs"
             aria-label="Call Balkumari Handicraft"
           >
-            <Phone size={13} />
-            <span>{SITE_CONFIG.phoneDisplay}</span>
+            <Phone size={11} />
+            {SITE_CONFIG.phoneDisplay}
           </a>
         </div>
       </div>
@@ -77,7 +72,7 @@ export function Header() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2 flex-shrink-0"
+          className="flex items-center flex-shrink-0"
           aria-label="Balkumari Handicraft — Home"
         >
           <Image
@@ -86,85 +81,42 @@ export function Header() {
             width={140}
             height={48}
             priority
-            className="h-10 w-auto object-contain"
+            className={cn(
+              "h-10 w-auto object-contain transition-all duration-300",
+              !solidHeader ? "brightness-0 invert" : ""
+            )}
           />
         </Link>
 
-        {/* Desktop navigation */}
+        {/* Desktop nav links — no dropdown */}
         <ul
           className="hidden md:flex items-center gap-1"
           role="menubar"
         >
           {NAV_ITEMS.map((item) => (
-            <li
-              key={item.href}
-              className="relative group"
-              role="none"
-              onMouseEnter={() =>
-                item.children && setOpenDropdown(item.label)
-              }
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
+            <li key={item.href} role="none">
               <Link
                 href={item.href}
                 role="menuitem"
                 className={cn(
-                  "flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  "px-4 py-2 rounded-md text-sm font-medium",
+                  "transition-colors duration-200",
                   isActive(item.href)
-                    ? isScrolled || !isHomePage
+                    ? solidHeader
                       ? "text-brand-maroon font-semibold"
                       : "text-brand-gold font-semibold"
-                    : isScrolled || !isHomePage
+                    : solidHeader
                       ? "text-foreground hover:text-brand-maroon"
                       : "text-white/90 hover:text-white"
                 )}
-                aria-haspopup={item.children ? "true" : undefined}
               >
                 {item.label}
-                {item.children && (
-                  <ChevronDown
-                    size={14}
-                    className={cn(
-                      "transition-transform duration-200",
-                      openDropdown === item.label && "rotate-180"
-                    )}
-                  />
-                )}
               </Link>
-
-              {/* Dropdown */}
-              {item.children && (
-                <div
-                  className={cn(
-                    "absolute top-full left-0 mt-1 w-52 bg-white rounded-lg shadow-lg",
-                    "border border-brand-gold/20 overflow-hidden",
-                    "transition-all duration-200 origin-top",
-                    openDropdown === item.label
-                      ? "opacity-100 scale-y-100 pointer-events-auto"
-                      : "opacity-0 scale-y-95 pointer-events-none"
-                  )}
-                  role="menu"
-                >
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.href}
-                      href={child.href}
-                      role="menuitem"
-                      className="block px-4 py-2.5 text-sm text-foreground
-                        hover:bg-brand-cream hover:text-brand-maroon
-                        transition-colors border-b border-brand-gold/10
-                        last:border-0"
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
             </li>
           ))}
         </ul>
 
-        {/* Desktop CTA */}
+        {/* Desktop CTA — WhatsApp */}
         <div className="hidden md:flex items-center gap-3">
           <Button
             asChild
@@ -172,18 +124,18 @@ export function Header() {
               rounded-full px-5 h-9 text-sm font-medium gap-2"
           >
             <a
-              href={`https://wa.me/${SITE_CONFIG.whatsapp}`}
+              href={`https://wa.me/${SITE_CONFIG.whatsapp}?text=Hello%2C%20I%20am%20interested%20in%20your%20handicrafts`}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Contact us on WhatsApp"
+              aria-label="Contact Balkumari Handicraft on WhatsApp"
             >
-              <MessageCircle size={15} />
+              <MessageCircle size={14} />
               WhatsApp Us
             </a>
           </Button>
         </div>
 
-        {/* Mobile hamburger */}
+        {/* Mobile menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button
@@ -191,20 +143,17 @@ export function Header() {
               size="icon"
               className={cn(
                 "md:hidden",
-                !isScrolled && isHomePage ? "text-white hover:text-white hover:bg-white/10" : ""
+                !solidHeader ? "text-white hover:bg-white/10" : ""
               )}
               aria-label="Open menu"
             >
               <Menu size={22} />
             </Button>
           </SheetTrigger>
-          <SheetContent
-            side="right"
-            className="w-[300px] bg-white p-0"
-          >
-            {/* Mobile menu header */}
-            <div className="flex items-center justify-between p-4
-              border-b border-brand-gold/20 bg-brand-cream">
+          <SheetContent side="right" className="w-[280px] bg-white p-0">
+            {/* Mobile header */}
+            <div className="flex items-center p-4 border-b
+              border-brand-gold/20 bg-brand-cream">
               <Image
                 src="/logo.png"
                 alt="Balkumari Handicraft"
@@ -217,51 +166,34 @@ export function Header() {
             {/* Mobile nav links */}
             <nav className="p-4 space-y-1" aria-label="Mobile navigation">
               {NAV_ITEMS.map((item) => (
-                <div key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "block px-3 py-2.5 rounded-md text-base font-medium",
-                      "transition-colors",
-                      isActive(item.href)
-                        ? "bg-brand-cream text-brand-maroon font-semibold"
-                        : "text-foreground hover:bg-brand-cream hover:text-brand-maroon"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                  {/* Mobile sub-items */}
-                  {item.children && (
-                    <div className="pl-4 mt-1 space-y-0.5">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          onClick={() => setIsOpen(false)}
-                          className="block px-3 py-2 text-sm text-muted-foreground
-                            hover:text-brand-maroon transition-colors rounded-md
-                            hover:bg-brand-cream"
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={cn(
+                    "block px-3 py-2.5 rounded-md text-base font-medium",
+                    "transition-colors",
+                    isActive(item.href)
+                      ? "bg-brand-cream text-brand-maroon font-semibold"
+                      : "text-foreground hover:bg-brand-cream hover:text-brand-maroon"
                   )}
-                </div>
+                >
+                  {item.label}
+                </Link>
               ))}
             </nav>
 
-            {/* Mobile contact info */}
+            {/* Mobile bottom CTA */}
             <div className="absolute bottom-0 left-0 right-0 p-4
               border-t border-brand-gold/20 bg-brand-cream space-y-3">
               <a
-                href={`https://wa.me/${SITE_CONFIG.whatsapp}`}
+                href={`https://wa.me/${SITE_CONFIG.whatsapp}?text=Hello%2C%20I%20am%20interested%20in%20your%20handicrafts`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 w-full bg-brand-gold
-                  hover:bg-brand-gold-dark text-white rounded-full px-4 py-2.5
-                  text-sm font-medium transition-colors justify-center"
+                className="flex items-center gap-2 justify-center w-full
+                  bg-brand-gold hover:bg-brand-gold-dark text-white
+                  rounded-full px-4 py-2.5 text-sm font-medium
+                  transition-colors"
               >
                 <MessageCircle size={15} />
                 WhatsApp Us

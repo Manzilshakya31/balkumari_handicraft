@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Send, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SITE_CONFIG } from "@/data/site-config";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -187,7 +188,7 @@ export function ContactForm() {
       <p className="text-xs text-center text-muted-foreground">
         For immediate response, use{" "}
         <a
-          href="https://wa.me/9779818706474"
+          href={`https://wa.me/${SITE_CONFIG.whatsapp}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-brand-gold-dark hover:underline"
