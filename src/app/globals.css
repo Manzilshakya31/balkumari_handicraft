@@ -2,26 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 45 33% 97%;
+    --foreground: 20 14% 15%;
+    --card: 45 20% 96%;
+    --card-foreground: 20 14% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14% 15%;
+    --primary: 35 47% 52%;
+    --primary-foreground: 45 33% 97%;
+    --secondary: 0 57% 26%;
+    --secondary-foreground: 45 33% 97%;
+    --muted: 45 20% 92%;
+    --muted-foreground: 20 10% 40%;
+    --accent: 45 60% 85%;
+    --accent-foreground: 20 14% 15%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 45 20% 85%;
+    --input: 45 20% 85%;
+    --ring: 35 47% 52%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 20 14% 10%;
+    --foreground: 45 33% 95%;
+    --card: 20 14% 12%;
+    --card-foreground: 45 33% 95%;
+    --popover: 20 14% 10%;
+    --popover-foreground: 45 33% 95%;
+    --primary: 35 47% 52%;
+    --primary-foreground: 45 33% 97%;
+    --secondary: 0 57% 30%;
+    --secondary-foreground: 45 33% 97%;
+    --muted: 20 14% 18%;
+    --muted-foreground: 45 20% 65%;
+    --accent: 35 47% 25%;
+    --accent-foreground: 45 33% 95%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 45 33% 95%;
+    --border: 20 14% 20%;
+    --input: 20 14% 20%;
+    --ring: 35 47% 52%;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  .section-padding {
+    @apply py-16 md:py-24;
   }
 }
