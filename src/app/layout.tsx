@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: SITE_CONFIG.seo.ogImage,
         width: 1200,
         height: 630,
-        alt: "Balkumari Handicraft — Authentic Nepali Crafts from Lalitpur, Nepal",
+        alt: "Balkumari Handicraft - Authentic Nepali Crafts from Lalitpur, Nepal",
       },
     ],
   },
@@ -83,10 +83,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${playfair.variable}`}
-    >
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className={inter.className}>{children}</body>
     </html>
   );
