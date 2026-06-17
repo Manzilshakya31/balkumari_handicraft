@@ -1,122 +1,206 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 const STATS = [
-  { value: "100+", label: "Unique Products" },
-  { value: "6", label: "Craft Categories" },
-  { value: "500+", label: "Happy Customers" },
-  { value: "10+", label: "Years of Craft" },
+  { value: "25+", label: "Years", context: "Est. 1999" },
+  { value: "100+", label: "Products", context: "Handcrafted" },
+  { value: "500+", label: "Customers", context: "Worldwide" },
+  { value: "10+", label: "Countries", context: "Exhibitions" },
 ];
 
 export function AboutPreview() {
   return (
     <section
-      className="section-padding bg-white"
+      className="bg-brand-brown overflow-hidden"
       aria-labelledby="about-heading"
     >
       <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[520px]">
 
-          {/* Left — text content */}
-          <div>
+          {/* ── Left panel — story ── */}
+          <div
+            className="py-16 lg:py-20 pr-0 lg:pr-14
+              border-b lg:border-b-0 lg:border-r
+              border-white/10 flex flex-col justify-center"
+          >
             {/* Eyebrow */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px w-8 bg-brand-gold" aria-hidden="true" />
-              <span className="text-brand-gold text-xs font-semibold tracking-[0.2em] uppercase">
+            <div className="flex items-center gap-3 mb-6">
+              <div
+                className="h-px w-8 bg-brand-gold"
+                aria-hidden="true"
+              />
+              <span className="text-brand-gold text-xs font-semibold
+                tracking-[0.2em] uppercase">
                 Our Story
               </span>
             </div>
 
+            {/* Heading */}
             <h2
               id="about-heading"
-              className="font-serif font-bold text-brand-brown leading-tight mb-5"
-              style={{ fontSize: "clamp(1.625rem, 3.5vw, 2.5rem)" }}
+              className="font-serif font-bold text-white
+                leading-[1.1] mb-6"
+              style={{
+                fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
+              }}
             >
-              Preserving the Art of{" "}
-              <span className="text-brand-maroon">Newari Craftsmanship</span>
+              25 Years of{" "}
+              <span className="text-brand-gold">
+                Authentic Craft
+              </span>
             </h2>
 
+            {/* Short story — no em dashes, short sentences */}
             <div
-              className="space-y-4 text-muted-foreground leading-relaxed mb-8"
-              style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)" }}
+              className="space-y-4 text-white/60 leading-relaxed mb-8"
+              style={{
+                fontSize: "clamp(0.875rem, 1.4vw, 0.9375rem)",
+              }}
             >
               <p>
-                Nestled in the heart of Thapahiti, Lalitpur — a city renowned
-                for centuries as the center of Nepali craftsmanship — Balkumari
-                Handicraft was born from a deep respect for traditional Newari
-                artistry.
+                Gyani Raj Shakya started with one goal: to learn
+                the craft properly. He spent years training beside
+                master artisans in Thapahiti, Lalitpur, mastering
+                the lost-wax casting process that has defined
+                Nepali metalwork for centuries.
               </p>
               <p>
-                Every piece in our collection is handcrafted by skilled local
-                artisans using time-honored techniques passed down through
-                generations. From intricate copper Buddha statues to
-                hand-painted thangka paintings, each item tells a story of
-                cultural heritage and artistic mastery.
+                As his skills grew, so did his reach. He took
+                Nepali handicrafts to international exhibitions
+                in China, Bhutan, and beyond. The world responded.
+                Today, Balkumari Handicraft ships handcrafted
+                statues, singing bowls, and sacred art to
+                collectors and temples across every continent.
               </p>
               <p>
-                We believe authentic handicrafts deserve to reach the world.
-                That is why we ship our pieces globally, directly from our
-                workshop in Lalitpur.
+                Every piece carries the same commitment Gyani Raj
+                started with in 1999: complete authenticity,
+                genuine craftsmanship, nothing compromised.
               </p>
             </div>
 
-            <Button
-              asChild
-              variant="outline"
-              className="rounded-full px-7 h-10 border-brand-maroon
-                text-brand-maroon hover:bg-brand-maroon hover:text-white
-                font-semibold gap-2 text-sm transition-all duration-200"
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-2 text-brand-gold
+                hover:text-brand-gold-light text-sm font-semibold
+                uppercase tracking-[0.15em] transition-colors
+                duration-200 group w-fit"
+              aria-label="Read the full story of Balkumari Handicraft"
             >
-              <Link href="/about">
-                Read Our Story
-                <ArrowRight size={15} />
-              </Link>
-            </Button>
+              Read Full Story
+              <ArrowRight
+                size={14}
+                className="transition-transform duration-200
+                  group-hover:translate-x-1"
+              />
+            </Link>
           </div>
 
-          {/* Right — stats grid */}
-          <div className="relative">
-            {/* Decorative background */}
+          {/* ── Right panel — founder quote ── */}
+          <div
+            className="py-16 lg:py-20 pl-0 lg:pl-14
+              flex flex-col justify-center"
+          >
+            {/* Large decorative quote mark */}
             <div
-              className="absolute -inset-4 rounded-2xl bg-brand-cream"
+              className="font-serif text-brand-gold/10 leading-none
+                mb-4 select-none"
+              style={{ fontSize: "8rem", lineHeight: 1 }}
               aria-hidden="true"
-            />
-
-            <div className="relative grid grid-cols-2 gap-4">
-              {STATS.map(({ value, label }) => (
-                <div
-                  key={label}
-                  className="bg-white rounded-xl p-6 text-center
-                    border border-brand-gold/15 hover:border-brand-gold/40
-                    hover:shadow-md transition-all duration-200"
-                >
-                  <p
-                    className="font-serif font-bold text-brand-maroon leading-none mb-2"
-                    style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
-                  >
-                    {value}
-                  </p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-                    {label}
-                  </p>
-                </div>
-              ))}
+            >
+              &ldquo;
             </div>
 
-            {/* Decorative gold corner accent */}
+            {/* Quote */}
+            <blockquote>
+              <p
+                className="font-serif text-white leading-relaxed mb-6"
+                style={{
+                  fontSize: "clamp(1.1rem, 2vw, 1.4rem)",
+                }}
+              >
+                From the exhibition halls of China and Bhutan to
+                homes across five continents, every piece that
+                leaves our workshop carries the soul of Nepal.
+              </p>
+              <footer>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="h-px w-8 bg-brand-gold/40"
+                    aria-hidden="true"
+                  />
+                  <div>
+                    <p className="text-white text-sm font-semibold">
+                      Gyani Raj Shakya
+                    </p>
+                    <p className="text-white/40 text-xs mt-0.5">
+                      Founder, Balkumari Handicraft
+                    </p>
+                  </div>
+                </div>
+              </footer>
+            </blockquote>
+
+            {/* Thin gold divider */}
             <div
-              className="absolute -bottom-2 -right-2 w-12 h-12
-                rounded-full bg-brand-gold/20 border border-brand-gold/30"
+              className="h-px bg-white/10 my-8"
               aria-hidden="true"
             />
-            <div
-              className="absolute -top-2 -left-2 w-8 h-8 rounded-full bg-brand-maroon/10"
-              aria-hidden="true"
-            />
+
+            {/* Origin badge */}
+            <div className="flex items-center gap-3">
+              <div
+                className="w-2 h-2 rounded-full bg-brand-gold"
+                aria-hidden="true"
+              />
+              <p className="text-white/40 text-xs tracking-wider uppercase">
+                Thapahiti, Lalitpur, Nepal · Est. 1999
+              </p>
+            </div>
           </div>
 
         </div>
+
+        {/* ── Bottom stats strip ── */}
+        <div
+          className="grid grid-cols-2 md:grid-cols-4
+            border-t border-white/10"
+        >
+          {STATS.map(({ value, label, context }, index) => (
+            <div
+              key={label}
+              className={`
+                py-8 px-6 text-center
+                ${index < STATS.length - 1
+                  ? "border-b md:border-b-0 md:border-r border-white/10"
+                  : "border-b md:border-b-0"
+                }
+                ${index % 2 === 0 && index < STATS.length - 1
+                  ? "border-r md:border-r-0"
+                  : ""
+                }
+              `}
+            >
+              <p
+                className="font-serif font-bold text-brand-gold
+                  leading-none mb-1"
+                style={{
+                  fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
+                }}
+              >
+                {value}
+              </p>
+              <p className="text-white text-xs font-semibold
+                uppercase tracking-wider mb-0.5">
+                {label}
+              </p>
+              <p className="text-white/35 text-[10px]">
+                {context}
+              </p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );

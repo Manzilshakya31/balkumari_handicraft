@@ -87,8 +87,10 @@ export default function AboutPage() {
               className="font-serif text-brand-brown leading-relaxed mb-6"
               style={{ fontSize: "clamp(1.1rem, 2vw, 1.35rem)" }}
             >
-              Balkumari Handicraft was born from a deep respect for the art
-              that has defined Lalitpur for over a thousand years.
+              Founded by Gyani Raj Shakya in 1999, Balkumari
+              Handicraft has spent more than 25 years bringing
+              authentic Newari craftsmanship from the workshops
+              of Lalitpur to homes across the world.
             </p>
 
             <div
@@ -96,31 +98,53 @@ export default function AboutPage() {
               style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)" }}
             >
               <p>
-                Nestled in Thapahiti — one of Lalitpur&apos;s oldest
-                neighborhoods and a hub of traditional Newari metalcraft —
-                our workshop brings together skilled artisans who have
-                dedicated their lives to this craft.
+                Balkumari Handicraft was founded by Gyani Raj Shakya
+                more than 25 years ago in the heart of Thapahiti,
+                Lalitpur — a neighbourhood that has been the beating
+                centre of Nepali metalcraft and artisanship for over
+                a thousand years.
               </p>
               <p>
-                Every Buddha statue, every singing bowl, every metal craft
-                piece in our collection begins as raw material and ends as a
-                hand-finished work of art. We use the traditional lost-wax
-                casting method, hand engraving, and gold plating techniques
-                that have remained unchanged for centuries.
+                Gyani Raj did not begin his journey as a shopkeeper.
+                He began it as a craftsman. In the workshops of
+                Lalitpur, he sat beside master artisans and learned
+                every step of the statue-making process — from the
+                preparation of raw copper and bronze, to the ancient
+                lost-wax casting method, to the final hand-finishing
+                and gold plating that gives each piece its sacred
+                beauty. This was not education from books. It was
+                knowledge earned through years of patient, dedicated
+                practice.
               </p>
               <p>
-                We started Balkumari Handicraft because we saw authentic
-                Nepali craftsmanship being undervalued and underrepresented
-                globally. Our mission is simple: connect the world with
-                genuine Nepali art, made by the hands of people who have
-                inherited this knowledge through generations.
+                As his mastery grew, Gyani Raj began taking Nepali
+                handicrafts beyond the borders of Nepal. He
+                participated in international exhibitions in China,
+                Bhutan, and multiple other countries — presenting
+                authentic Newari craftsmanship on the world stage.
+                These exhibitions opened eyes to what genuine Nepali
+                artistry looked like: not mass-produced souvenirs,
+                but deeply meaningful objects of cultural and
+                spiritual significance, made by human hands using
+                techniques unchanged for centuries.
               </p>
               <p>
-                When you purchase from us, you are not just buying a
-                decorative object. You are supporting a living artistic
-                tradition, a community of skilled craftspeople in Lalitpur,
-                and the continued survival of an art form that is central
-                to Nepali cultural identity.
+                Inspired by the global response, Gyani Raj built
+                Balkumari Handicraft into a worldwide operation.
+                Today, handcrafted Buddha statues, Hindu deity
+                figures, singing bowls, metal crafts, ritual items,
+                and thangka paintings from his workshop are delivered
+                to collectors, temples, meditation centres, and
+                homes across every continent.
+              </p>
+              <p>
+                More than 500 customers across the world have trusted
+                Gyani Raj Shakya with bringing a piece of Nepal into
+                their lives. Each one receives not just an object,
+                but a story — the story of a man who dedicated his
+                life to ensuring that the living tradition of Newari
+                craftsmanship would never be forgotten, and would
+                always find its way to those who truly value it.
               </p>
             </div>
           </div>

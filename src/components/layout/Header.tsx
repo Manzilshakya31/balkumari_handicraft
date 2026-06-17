@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, Phone, MessageCircle } from "lucide-react";
+import { Menu, Phone, Search, X } from "lucide-react";
 import { NAV_ITEMS } from "@/lib/navigation";
 import { SITE_CONFIG } from "@/data/site-config";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,11 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
   const isHomePage = pathname === "/";
 
   useEffect(() => {
@@ -22,6 +26,20 @@ export function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (searchOpen) searchRef.current?.focus();
+  }, [searchOpen]);
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/shop?search=${encodeURIComponent(q)}`);
+      setSearchQuery("");
+      setSearchOpen(false);
+    }
+  }
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -81,10 +99,7 @@ export function Header() {
             width={140}
             height={48}
             priority
-            className={cn(
-              "h-10 w-auto object-contain transition-all duration-300",
-              !solidHeader ? "brightness-0 invert" : ""
-            )}
+            className="h-10 w-auto object-contain transition-all duration-300"
           />
         </Link>
 
@@ -116,24 +131,91 @@ export function Header() {
           ))}
         </ul>
 
-        {/* Desktop CTA — WhatsApp */}
-        <div className="hidden md:flex items-center gap-3">
-          <Button
-            asChild
-            className="bg-brand-gold hover:bg-brand-gold-dark text-white
-              rounded-full px-5 h-9 text-sm font-medium gap-2"
+        {/* Desktop search */}
+        <div className="hidden md:flex items-center">
+          <form
+            onSubmit={handleSearch}
+            role="search"
+            className={cn(
+              "flex items-center rounded-full h-9",
+              "border transition-all duration-300",
+              searchOpen ? "w-56 gap-2 px-3" : "w-9 justify-center cursor-pointer",
+              solidHeader
+                ? "border-brand-gold/25 bg-brand-cream/60 hover:border-brand-gold/50"
+                : "border-white/20 bg-white/10 hover:border-white/40"
+            )}
+            onClick={() => !searchOpen && setSearchOpen(true)}
           >
-            <a
-              href={`https://wa.me/${SITE_CONFIG.whatsapp}?text=Hello%2C%20I%20am%20interested%20in%20your%20handicrafts`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Contact Balkumari Handicraft on WhatsApp"
+            <button
+              type={searchOpen ? "submit" : "button"}
+              onClick={() => !searchOpen && setSearchOpen(true)}
+              aria-label="Search products"
+              className={cn(
+                "flex items-center justify-center flex-shrink-0 transition-colors",
+                solidHeader ? "text-brand-brown/60 hover:text-brand-maroon" : "text-white/60 hover:text-white"
+              )}
             >
-              <MessageCircle size={14} />
-              WhatsApp Us
-            </a>
-          </Button>
+              <Search size={15} />
+            </button>
+
+            <input
+              ref={searchRef}
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products…"
+              aria-label="Search products"
+              className={cn(
+                "bg-transparent border-none outline-none text-sm w-full",
+                "transition-all duration-300",
+                searchOpen ? "opacity-100" : "opacity-0 w-0 pointer-events-none",
+                solidHeader
+                  ? "text-brand-brown placeholder:text-muted-foreground/50"
+                  : "text-white placeholder:text-white/40"
+              )}
+            />
+
+            {searchOpen && searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                aria-label="Clear search"
+                className={cn(
+                  "flex-shrink-0 transition-colors",
+                  solidHeader ? "text-muted-foreground hover:text-brand-brown" : "text-white/50 hover:text-white"
+                )}
+              >
+                <X size={13} />
+              </button>
+            )}
+
+            {searchOpen && !searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchOpen(false)}
+                aria-label="Close search"
+                className={cn(
+                  "flex-shrink-0 transition-colors",
+                  solidHeader ? "text-muted-foreground hover:text-brand-brown" : "text-white/50 hover:text-white"
+                )}
+              >
+                <X size={13} />
+              </button>
+            )}
+          </form>
         </div>
+
+        {/* Mobile search icon + hamburger */}
+        <div className="flex items-center gap-1 md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/shop")}
+            className={cn(!solidHeader ? "text-white hover:bg-white/10" : "")}
+            aria-label="Search products"
+          >
+            <Search size={20} />
+          </Button>
 
         {/* Mobile menu */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -142,7 +224,6 @@ export function Header() {
               variant="ghost"
               size="icon"
               className={cn(
-                "md:hidden",
                 !solidHeader ? "text-white hover:bg-white/10" : ""
               )}
               aria-label="Open menu"
@@ -186,18 +267,16 @@ export function Header() {
             {/* Mobile bottom CTA */}
             <div className="absolute bottom-0 left-0 right-0 p-4
               border-t border-brand-gold/20 bg-brand-cream space-y-3">
-              <a
-                href={`https://wa.me/${SITE_CONFIG.whatsapp}?text=Hello%2C%20I%20am%20interested%20in%20your%20handicrafts`}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/contact"
+                onClick={() => setIsOpen(false)}
                 className="flex items-center gap-2 justify-center w-full
                   bg-brand-gold hover:bg-brand-gold-dark text-white
                   rounded-full px-4 py-2.5 text-sm font-medium
                   transition-colors"
               >
-                <MessageCircle size={15} />
-                WhatsApp Us
-              </a>
+                Contact Us
+              </Link>
               <a
                 href={`tel:${SITE_CONFIG.phone}`}
                 className="flex items-center gap-2 justify-center
@@ -210,6 +289,7 @@ export function Header() {
             </div>
           </SheetContent>
         </Sheet>
+        </div>
       </nav>
     </header>
   );

@@ -22,7 +22,7 @@ export function Footer() {
                 alt="Balkumari Handicraft"
                 width={140}
                 height={48}
-                className="h-11 w-auto object-contain brightness-0 invert mb-4"
+                className="h-11 w-auto object-contain mb-4"
               />
             </Link>
             <p className="text-sm text-white/70 leading-relaxed mb-5">
@@ -152,17 +152,6 @@ export function Footer() {
                   className="text-brand-gold flex-shrink-0 mt-0.5"
                 />
                 <span>{SITE_CONFIG.phoneDisplay}</span>
-              </a>
-              <a
-                href={`https://wa.me/${SITE_CONFIG.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-2 bg-brand-gold
-                  hover:bg-brand-gold-dark text-white rounded-full px-4 py-2
-                  text-sm font-medium transition-colors"
-              >
-                <MessageCircle size={14} />
-                Chat on WhatsApp
               </a>
             </address>
           </div>

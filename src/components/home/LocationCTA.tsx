@@ -1,4 +1,5 @@
-import { MapPin, Phone, Clock, MessageCircle } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Phone, Clock, ArrowRight } from "lucide-react";
 import { SITE_CONFIG } from "@/data/site-config";
 
 export function LocationCTA() {
@@ -101,21 +102,17 @@ export function LocationCTA() {
               </div>
             </address>
 
-            {/* WhatsApp CTA */}
-            <a
-              href={`https://wa.me/${SITE_CONFIG.whatsapp}?text=Hello%2C%20I%20would%20like%20to%20know%20more%20about%20your%20handicrafts`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/contact"
               className="inline-flex items-center gap-2.5
                 bg-brand-gold hover:bg-brand-gold-dark text-white
                 rounded-full px-7 py-3 text-sm font-semibold
                 transition-colors duration-200 shadow-lg
                 shadow-brand-gold/20"
-              aria-label="Contact Balkumari Handicraft on WhatsApp"
             >
-              <MessageCircle size={17} />
-              Chat with Us on WhatsApp
-            </a>
+              Send Us a Message
+              <ArrowRight size={16} />
+            </Link>
           </div>
 
           {/* Right — Google Maps embed */}

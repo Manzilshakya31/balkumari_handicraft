@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, ArrowRight, ChevronDown } from "lucide-react";
-import { SITE_CONFIG } from "@/data/site-config";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 export function Hero() {
   return (
@@ -143,15 +142,10 @@ export function Hero() {
                 backdropFilter: "blur(12px)",
               }}
             >
-              <a
-                href={`https://wa.me/${SITE_CONFIG.whatsapp}?text=Hello%2C%20I%20am%20interested%20in%20your%20Nepali%20handicrafts`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Contact Balkumari Handicraft on WhatsApp"
-              >
-                <MessageCircle size={15} />
-                Ask on WhatsApp
-              </a>
+              <Link href="/contact">
+                Contact Us
+                <ArrowRight size={15} />
+              </Link>
             </Button>
           </div>
 
