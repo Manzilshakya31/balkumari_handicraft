@@ -19,14 +19,7 @@ jobs:
 
       - name: Switch to backups branch
         run: |
-          if git ls-remote --exit-code --heads origin backups; then
-            git checkout backups
-          else
-            git checkout --orphan backups
-            git rm -rf .
-            git commit --allow-empty -m "init: backups branch"
-            git push origin backups
-          fi
+          git checkout backups 2>/dev/null || git checkout --orphan backups
 
       - name: Set backup date
         run: echo "DATE=$(date +%Y-%m-%d)" >> $GITHUB_ENV
@@ -54,8 +47,8 @@ jobs:
 
       - name: Commit backup
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
           git add "backup-${DATE}.sql"
           git commit -m "backup: ${DATE}"
 
