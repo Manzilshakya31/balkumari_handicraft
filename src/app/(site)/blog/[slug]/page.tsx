@@ -1,59 +1,80 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { createClient } from "@supabase/supabase-js";
 import {
   Calendar,
-  Clock,
   ChevronRight,
   ArrowLeft,
   MessageCircle,
 } from "lucide-react";
-import { getPostBySlug, getAllPostSlugs } from "@/data/blog";
 import { SITE_CONFIG } from "@/data/site-config";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+type Blog = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string | null;
+  excerpt: string | null;
+  cover_image: string | null;
+  created_at: string;
+};
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
 interface BlogPostPageProps {
   params: { slug: string };
 }
 
-export async function generateStaticParams() {
-  return getAllPostSlugs().map((slug) => ({ slug }));
-}
-
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
-  const post = getPostBySlug(params.slug);
-  if (!post) return {};
+  const { data } = await getSupabase()
+    .from("blogs")
+    .select("title, slug, excerpt, cover_image")
+    .eq("slug", params.slug)
+    .eq("status", "published")
+    .single();
+
+  if (!data) return {};
 
   return {
-    title: post.title,
-    description: post.excerpt,
-    keywords: post.keywords,
-    authors: [{ name: post.author }],
+    title: data.title,
+    description: data.excerpt ?? undefined,
     alternates: {
-      canonical: `${SITE_CONFIG.domain}/blog/${post.slug}`,
+      canonical: `${SITE_CONFIG.domain}/blog/${data.slug}`,
     },
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      url: `${SITE_CONFIG.domain}/blog/${post.slug}`,
+      title: data.title,
+      description: data.excerpt ?? undefined,
+      url: `${SITE_CONFIG.domain}/blog/${data.slug}`,
       type: "article",
-      publishedTime: post.date,
-      authors: [post.author],
-      images: [
-        {
-          url: post.coverImage,
-          alt: post.coverImageAlt,
-        },
-      ],
+      images: data.cover_image
+        ? [{ url: data.cover_image, alt: data.title }]
+        : [],
     },
   };
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getPostBySlug(params.slug);
-  if (!post) notFound();
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { data: blog } = await getSupabase()
+    .from("blogs")
+    .select("id, title, slug, content, excerpt, cover_image, created_at")
+    .eq("slug", params.slug)
+    .eq("status", "published")
+    .single();
+
+  if (!blog) notFound();
+
+  const post = blog as Blog;
 
   const whatsappMessage = encodeURIComponent(
     `Hello, I read your article "${post.title}" and I am interested in your handicrafts.`
@@ -121,25 +142,12 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4">
               <span className="flex items-center gap-1.5">
                 <Calendar size={11} aria-hidden="true" />
-                {new Date(post.date).toLocaleDateString("en-US", {
+                {new Date(post.created_at).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </span>
-              <span
-                className="w-1 h-1 rounded-full bg-muted-foreground/40"
-                aria-hidden="true"
-              />
-              <span className="flex items-center gap-1.5">
-                <Clock size={11} aria-hidden="true" />
-                {post.readingTime} min read
-              </span>
-              <span
-                className="w-1 h-1 rounded-full bg-muted-foreground/40"
-                aria-hidden="true"
-              />
-              <span>{post.author}</span>
             </div>
 
             <h1
@@ -149,28 +157,30 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               {post.title}
             </h1>
 
-            <p
-              className="text-muted-foreground leading-relaxed"
-              style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)" }}
-            >
-              {post.excerpt}
-            </p>
+            {post.excerpt && (
+              <p
+                className="text-muted-foreground leading-relaxed"
+                style={{ fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)" }}
+              >
+                {post.excerpt}
+              </p>
+            )}
           </header>
 
           {/* Cover image */}
-          <div
-            className="relative w-full rounded-2xl overflow-hidden mb-10 border border-brand-gold/10"
-            style={{ aspectRatio: "16/9" }}
-          >
-            <Image
-              src={post.coverImage}
-              alt={post.coverImageAlt}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, 768px"
-            />
-          </div>
+          {post.cover_image && (
+            <div
+              className="relative w-full rounded-2xl overflow-hidden mb-10 border border-brand-gold/10"
+              style={{ aspectRatio: "16/9" }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={post.cover_image}
+                alt={post.title}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </div>
+          )}
 
           {/* Article content */}
           <div

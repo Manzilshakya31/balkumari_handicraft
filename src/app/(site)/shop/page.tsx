@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { ShopClient } from "@/components/shop/ShopClient";
-import { ALL_PRODUCTS } from "@/data/products";
+import { createClient } from "@supabase/supabase-js";
+import { ShopClient, type SupabaseShopProduct } from "@/components/shop/ShopClient";
 import { SITE_CONFIG } from "@/data/site-config";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Shop Authentic Nepali Handicrafts",
@@ -26,11 +28,29 @@ export const metadata: Metadata = {
   },
 };
 
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+
 interface ShopPageProps {
   searchParams: { category?: string; search?: string };
 }
 
-export default function ShopPage({ searchParams }: ShopPageProps) {
+export default async function ShopPage({ searchParams }: ShopPageProps) {
+  const supabase = getSupabase();
+  const { data } = await supabase
+    .from("products")
+    .select(
+      "id, sku, name, category, price, material, is_available, product_images(url, alt_text, sort_order)"
+    )
+    .eq("status", "active")
+    .order("created_at", { ascending: false });
+
+  const products = (data ?? []) as SupabaseShopProduct[];
+
   return (
     <div className="min-h-screen bg-brand-cream">
       {/* Page header */}
@@ -59,9 +79,9 @@ export default function ShopPage({ searchParams }: ShopPageProps) {
         </div>
       </div>
 
-      {/* Shop content — client component handles filtering */}
+      {/* Shop content */}
       <ShopClient
-        products={ALL_PRODUCTS}
+        products={products}
         initialCategory={searchParams.category}
         initialSearch={searchParams.search}
       />

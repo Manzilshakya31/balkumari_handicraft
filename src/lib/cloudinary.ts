@@ -60,3 +60,4 @@ export function getOgImage(publicId: string): string {
     crop: "fill",
   });
 }
+

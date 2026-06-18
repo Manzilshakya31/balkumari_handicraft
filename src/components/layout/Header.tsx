@@ -10,6 +10,7 @@ import { Menu, Phone, Search, X } from "lucide-react";
 import { NAV_ITEMS } from "@/lib/navigation";
 import { SITE_CONFIG } from "@/data/site-config";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,13 +32,28 @@ export function Header() {
     if (searchOpen) searchRef.current?.focus();
   }, [searchOpen]);
 
-  function handleSearch(e: React.FormEvent) {
+  async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     const q = searchQuery.trim();
-    if (q) {
+    if (!q) return;
+
+    // Close the search bar immediately for responsive feel
+    setSearchQuery("");
+    setSearchOpen(false);
+
+    // Check if the query is an exact SKU match (case-insensitive)
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("products")
+      .select("sku")
+      .ilike("sku", q)
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (data?.sku) {
+      router.push(`/shop/${data.sku}`);
+    } else {
       router.push(`/shop?search=${encodeURIComponent(q)}`);
-      setSearchQuery("");
-      setSearchOpen(false);
     }
   }
 

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
-import { ALL_POSTS } from "@/data/blog";
+import { createClient } from "@supabase/supabase-js";
+import { Calendar, ArrowRight } from "lucide-react";
 import { SITE_CONFIG } from "@/data/site-config";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Blog — Nepali Handicraft Guides & Stories",
@@ -21,8 +23,31 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
-  const publishedPosts = ALL_POSTS.filter((p) => p.published);
+type Blog = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  cover_image: string | null;
+  created_at: string;
+};
+
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
+
+export default async function BlogPage() {
+  const supabase = getSupabase();
+  const { data } = await supabase
+    .from("blogs")
+    .select("id, title, slug, excerpt, cover_image, created_at")
+    .eq("status", "published")
+    .order("created_at", { ascending: false });
+
+  const blogs = (data ?? []) as Blog[];
 
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -54,7 +79,7 @@ export default function BlogPage() {
       </div>
 
       <div className="container-custom py-12">
-        {publishedPosts.length === 0 ? (
+        {blogs.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-4xl mb-4" aria-hidden="true">✍️</p>
             <h2 className="font-serif text-xl text-brand-brown mb-2">
@@ -67,9 +92,9 @@ export default function BlogPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {publishedPosts.map((post) => (
+            {blogs.map((blog) => (
               <article
-                key={post.slug}
+                key={blog.id}
                 className="bg-white rounded-xl overflow-hidden border
                   border-brand-gold/10 hover:border-brand-gold/30
                   hover:shadow-lg hover:shadow-brand-gold/10
@@ -77,18 +102,21 @@ export default function BlogPage() {
               >
                 {/* Cover image */}
                 <Link
-                  href={`/blog/${post.slug}`}
+                  href={`/blog/${blog.slug}`}
                   className="block relative overflow-hidden bg-brand-cream"
                   style={{ aspectRatio: "16/9" }}
                   tabIndex={-1}
                   aria-hidden="true"
                 >
-                  <Image
-                    src={post.coverImage}
-                    alt={post.coverImageAlt}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      blog.cover_image ||
+                      "https://placehold.co/800x450/f5e6d0/9a7b4b?text=Blog"
+                    }
+                    alt={blog.title}
+                    className="absolute inset-0 w-full h-full object-cover
+                      transition-transform duration-500 group-hover:scale-105"
                   />
                 </Link>
 
@@ -97,45 +125,37 @@ export default function BlogPage() {
                   <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
                     <span className="flex items-center gap-1.5">
                       <Calendar size={11} aria-hidden="true" />
-                      {new Date(post.date).toLocaleDateString("en-US", {
+                      {new Date(blog.created_at).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
                       })}
                     </span>
-                    <span
-                      className="w-1 h-1 rounded-full bg-muted-foreground/40"
-                      aria-hidden="true"
-                    />
-                    <span className="flex items-center gap-1.5">
-                      <Clock size={11} aria-hidden="true" />
-                      {post.readingTime} min read
-                    </span>
                   </div>
 
                   {/* Title */}
-                  <Link href={`/blog/${post.slug}`}>
+                  <Link href={`/blog/${blog.slug}`}>
                     <h2
                       className="font-serif font-semibold text-brand-brown
                         leading-snug mb-2 line-clamp-2
                         group-hover:text-brand-maroon transition-colors text-base"
                     >
-                      {post.title}
+                      {blog.title}
                     </h2>
                   </Link>
 
                   {/* Excerpt */}
                   <p className="text-xs text-muted-foreground leading-relaxed mb-4 line-clamp-3">
-                    {post.excerpt}
+                    {blog.excerpt}
                   </p>
 
                   {/* Read more */}
                   <Link
-                    href={`/blog/${post.slug}`}
+                    href={`/blog/${blog.slug}`}
                     className="inline-flex items-center gap-1.5 text-xs
                       font-semibold text-brand-gold-dark
                       hover:text-brand-maroon transition-colors group/link"
-                    aria-label={`Read more: ${post.title}`}
+                    aria-label={`Read more: ${blog.title}`}
                   >
                     Read Article
                     <ArrowRight
