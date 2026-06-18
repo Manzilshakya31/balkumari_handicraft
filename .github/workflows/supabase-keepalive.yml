@@ -1,0 +1,23 @@
+name: Supabase Keepalive
+
+on:
+  schedule:
+    - cron: '0 9 */5 * *'
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/products?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+          echo "Response code: $RESPONSE"
+          if [ "$RESPONSE" = "200" ]; then
+            echo "Supabase is alive and responding"
+          else
+            echo "Warning: Got response code $RESPONSE"
+          fi
