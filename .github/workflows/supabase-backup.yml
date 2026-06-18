@@ -16,6 +16,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
 
       - name: Switch to backups branch
         run: |
@@ -45,20 +51,8 @@ jobs:
             --format=plain \
             > "backup-${DATE}.sql"
 
-      - name: Commit backup
+      - name: Commit and push backup
         run: |
-          git config user.email "github-actions@github.com"
-          git config user.name "GitHub Actions"
           git add "backup-${DATE}.sql"
-          git commit -m "backup: ${DATE}"
-
-      - name: Prune old backups (keep last 10)
-        run: |
-          OLD=$(ls -1 backup-*.sql 2>/dev/null | sort | head -n -10)
-          if [ -n "$OLD" ]; then
-            echo "$OLD" | xargs git rm
-            git commit -m "chore: remove old backups"
-          fi
-
-      - name: Push
-        run: git push origin backups
+          git commit -m "backup: ${DATE}" || echo "Nothing to commit"
+          git push origin backups --force
