@@ -1,14 +1,11 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
   Crown,
-  Flame,
   Hammer,
-  Music,
-  Palette,
   Sparkles,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/data/site-config";
@@ -54,7 +51,7 @@ const CATEGORY_DETAILS: Record<
   },
   "metal-crafts": {
     icon: Hammer,
-    short: "Decorative metalwork, repoussé details, and handmade Nepali objects.",
+    short: "Decorative metalwork, repouss� details, and handmade Nepali objects.",
     intent: "Home accents",
     gradient: "from-[#271b0b] via-[#5a4216]/90 to-[#100b05]",
   },

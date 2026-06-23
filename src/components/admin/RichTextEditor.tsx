@@ -26,14 +26,6 @@ type EditorToolbarProps = {
   editor: Editor;
 };
 
-const escapeCSV = (val: unknown) => {
-  if (val === null || val === undefined) return "";
-  const str = String(val);
-  if (/[",\r\n]/.test(str)) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-  return str;
-};
 
 const EditorToolbar = ({ editor }: EditorToolbarProps) => {
   const setLink = useCallback(() => {
@@ -295,3 +287,4 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
     </div>
   );
 }
+
