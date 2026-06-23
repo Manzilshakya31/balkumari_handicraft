@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { Hammer, MapPin, Heart, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SITE_CONFIG } from "@/data/site-config";
 
 export const metadata: Metadata = {
-  title: "About Us — Our Story & Craftsmanship",
+  title: "About Us â€” Our Story & Craftsmanship",
   description:
-    "Learn about Balkumari Handicraft — a family workshop in Thapahiti, Lalitpur, Nepal dedicated to preserving traditional Newari craftsmanship. Handcrafted Buddha statues and Nepali handicrafts since our founding.",
+    "Learn about Balkumari Handicraft â€” a family workshop in Thapahiti, Lalitpur, Nepal dedicated to preserving traditional Newari craftsmanship. Handcrafted Buddha statues and Nepali handicrafts since our founding.",
   keywords: [
     "about Balkumari Handicraft",
     "Nepali handicraft workshop Lalitpur",
@@ -37,7 +37,7 @@ const VALUES = [
     icon: MapPin,
     title: "Rooted in Lalitpur",
     description:
-      "We are proud to operate from Thapahiti, Lalitpur — one of Nepal's oldest centers of traditional metalcraft and artisanship.",
+      "We are proud to operate from Thapahiti, Lalitpur â€” one of Nepal's oldest centers of traditional metalcraft and artisanship.",
   },
   {
     icon: Globe,
@@ -50,7 +50,6 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-brand-cream">
-
       {/* Page header */}
       <div className="bg-brand-brown">
         <div className="container-custom py-12 md:py-16">
@@ -64,8 +63,7 @@ export default function AboutPage() {
             className="font-serif font-bold text-white leading-tight"
             style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
           >
-            About{" "}
-            <span className="text-brand-gold">Balkumari Handicraft</span>
+            About <span className="text-brand-gold">Balkumari Handicraft</span>
           </h1>
           <p
             className="text-white/55 mt-3 max-w-xl"
@@ -80,17 +78,15 @@ export default function AboutPage() {
       {/* Story section */}
       <div className="container-custom py-14 md:py-20">
         <div className="max-w-3xl mx-auto">
-
           {/* Main story */}
           <div className="mb-16">
             <p
               className="font-serif text-brand-brown leading-relaxed mb-6"
               style={{ fontSize: "clamp(1.1rem, 2vw, 1.35rem)" }}
             >
-              Founded by Gyani Raj Shakya in 1999, Balkumari
-              Handicraft has spent more than 25 years bringing
-              authentic Newari craftsmanship from the workshops
-              of Lalitpur to homes across the world.
+              Founded by Gyani Raj Shakya in 1999, Balkumari Handicraft has
+              spent more than 25 years bringing authentic Newari craftsmanship
+              from the workshops of Lalitpur to homes across the world.
             </p>
 
             <div
@@ -98,53 +94,45 @@ export default function AboutPage() {
               style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)" }}
             >
               <p>
-                Balkumari Handicraft was founded by Gyani Raj Shakya
-                more than 25 years ago in the heart of Thapahiti,
-                Lalitpur — a neighbourhood that has been the beating
-                centre of Nepali metalcraft and artisanship for over
-                a thousand years.
+                Balkumari Handicraft was founded by Gyani Raj Shakya more than
+                25 years ago in the heart of Thapahiti, Lalitpur â€” a
+                neighbourhood that has been the beating centre of Nepali
+                metalcraft and artisanship for over a thousand years.
               </p>
               <p>
-                Gyani Raj did not begin his journey as a shopkeeper.
-                He began it as a craftsman. In the workshops of
-                Lalitpur, he sat beside master artisans and learned
-                every step of the statue-making process — from the
-                preparation of raw copper and bronze, to the ancient
-                lost-wax casting method, to the final hand-finishing
-                and gold plating that gives each piece its sacred
-                beauty. This was not education from books. It was
-                knowledge earned through years of patient, dedicated
-                practice.
+                Gyani Raj did not begin his journey as a shopkeeper. He began it
+                as a craftsman. In the workshops of Lalitpur, he sat beside
+                master artisans and learned every step of the statue-making
+                process â€” from the preparation of raw copper and bronze, to the
+                ancient lost-wax casting method, to the final hand-finishing and
+                gold plating that gives each piece its sacred beauty. This was
+                not education from books. It was knowledge earned through years
+                of patient, dedicated practice.
               </p>
               <p>
-                As his mastery grew, Gyani Raj began taking Nepali
-                handicrafts beyond the borders of Nepal. He
-                participated in international exhibitions in China,
-                Bhutan, and multiple other countries — presenting
-                authentic Newari craftsmanship on the world stage.
-                These exhibitions opened eyes to what genuine Nepali
-                artistry looked like: not mass-produced souvenirs,
-                but deeply meaningful objects of cultural and
-                spiritual significance, made by human hands using
-                techniques unchanged for centuries.
+                As his mastery grew, Gyani Raj began taking Nepali handicrafts
+                beyond the borders of Nepal. He participated in international
+                exhibitions in China, Bhutan, and multiple other countries â€”
+                presenting authentic Newari craftsmanship on the world stage.
+                These exhibitions opened eyes to what genuine Nepali artistry
+                looked like: not mass-produced souvenirs, but deeply meaningful
+                objects of cultural and spiritual significance, made by human
+                hands using techniques unchanged for centuries.
               </p>
               <p>
-                Inspired by the global response, Gyani Raj built
-                Balkumari Handicraft into a worldwide operation.
-                Today, handcrafted Buddha statues, Hindu deity
-                figures, singing bowls, metal crafts, ritual items,
-                and thangka paintings from his workshop are delivered
-                to collectors, temples, meditation centres, and
-                homes across every continent.
+                Inspired by the global response, Gyani Raj built Balkumari
+                Handicraft into a worldwide operation. Today, handcrafted Buddha
+                statues, and Hindu deity figures from his workshop are delivered
+                to collectors, temples, meditation centres, and homes across
+                every continent.
               </p>
               <p>
-                More than 500 customers across the world have trusted
-                Gyani Raj Shakya with bringing a piece of Nepal into
-                their lives. Each one receives not just an object,
-                but a story — the story of a man who dedicated his
-                life to ensuring that the living tradition of Newari
-                craftsmanship would never be forgotten, and would
-                always find its way to those who truly value it.
+                More than 500 customers across the world have trusted Gyani Raj
+                Shakya with bringing a piece of Nepal into their lives. Each one
+                receives not just an object, but a story â€” the story of a man
+                who dedicated his life to ensuring that the living tradition of
+                Newari craftsmanship would never be forgotten, and would always
+                find its way to those who truly value it.
               </p>
             </div>
           </div>
@@ -189,8 +177,7 @@ export default function AboutPage() {
               Visit Us in Lalitpur
             </h2>
             <p className="text-white/55 text-sm mb-5 max-w-sm mx-auto">
-              {SITE_CONFIG.address.street},{" "}
-              {SITE_CONFIG.address.city},{" "}
+              {SITE_CONFIG.address.street}, {SITE_CONFIG.address.city},{" "}
               {SITE_CONFIG.address.country}
               <br />
               {SITE_CONFIG.hours.display}
@@ -209,14 +196,14 @@ export default function AboutPage() {
               <Button
                 asChild
                 variant="outline"
-                className="rounded-full border-white/20 text-white
-                  hover:bg-white/10 px-6 font-semibold text-sm"
+                className="rounded-full border-white bg-white px-6 text-sm
+                  font-semibold text-brand-brown hover:bg-brand-cream
+                  hover:text-brand-maroon"
               >
                 <Link href="/shop">Browse Collection</Link>
               </Button>
             </div>
           </div>
-
         </div>
       </div>
     </div>

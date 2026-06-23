@@ -50,17 +50,68 @@ export default function BlogsPage() {
     setDeletingId(null);
   }
 
+  // ── CSV Export ───────────────────────────────────────────────
+
+  function handleExportCSV() {
+    const headers = ["Title", "Slug", "Excerpt", "Status", "Created At"];
+    const fields: (keyof Blog)[] = ["title", "slug", "excerpt", "status", "created_at"];
+
+    const escapeCSV = (val: unknown) => {
+      if (val === null || val === undefined) return "";
+      const str = String(val);
+      if (/[",\r\n]/.test(str)) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const csvRows = [];
+    csvRows.push(headers.map((h) => escapeCSV(h)).join(","));
+
+    for (const blog of blogs) {
+      const row = fields.map((field) => escapeCSV(blog[field]));
+      csvRows.push(row.join(","));
+    }
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+
+    link.setAttribute("download", `balkumari-blogs-${yyyy}-${mm}-${dd}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Blogs</h1>
-        <button
-          onClick={() => router.push("/myadmin/blogs/new")}
-          className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white
-            text-sm font-semibold rounded-md transition-colors"
-        >
-          + Add New Blog
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExportCSV}
+            disabled={loading}
+            className="px-4 py-2 border border-gray-300 hover:bg-gray-50 text-gray-700
+              text-sm font-semibold rounded-md transition-colors disabled:opacity-50"
+          >
+            Export CSV
+          </button>
+          <button
+            onClick={() => router.push("/myadmin/blogs/new")}
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white
+              text-sm font-semibold rounded-md transition-colors"
+          >
+            + Add New Blog
+          </button>
+        </div>
       </div>
 
       {loading ? (

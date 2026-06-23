@@ -11,7 +11,7 @@ const TESTIMONIALS: Testimonial[] = [
     review:
       "I purchased a copper Buddha statue as a gift and it exceeded all expectations. The craftsmanship is extraordinary — you can feel the care and skill in every detail. Arrived perfectly packaged.",
     date: "2024-11-15",
-    productPurchased: "Shakyamuni Buddha Statue",
+    productPurchased: "Shakyamuni Statue",
   },
   {
     id: "t2",
@@ -19,9 +19,9 @@ const TESTIMONIALS: Testimonial[] = [
     location: "United Kingdom",
     rating: 5,
     review:
-      "Absolutely stunning singing bowl. The sound quality is incredible and the craftsmanship is beautiful. Communication with the shop was excellent — they answered all my questions on WhatsApp promptly.",
+      "Absolutely stunning Buddha Statue. The sound quality is incredible and the craftsmanship is beautiful. Communication with the shop was excellent — they answered all my questions on WhatsApp promptly.",
     date: "2024-12-02",
-    productPurchased: "Himalayan Singing Bowl",
+    productPurchased: "Buddha Statue",
   },
   {
     id: "t3",
@@ -118,7 +118,6 @@ export function Testimonials() {
             </figure>
           ))}
         </div>
-
       </div>
     </section>
   );

@@ -15,7 +15,6 @@ export function Hero() {
       }}
       aria-label="Balkumari Handicraft — Authentic Nepali Handicrafts"
     >
-
       {/* ── Video background ── */}
       <div className="absolute inset-0 w-full h-full">
         <video
@@ -69,7 +68,6 @@ export function Hero() {
       {/* ── Main content ── */}
       <div className="relative h-full container-custom flex flex-col justify-center">
         <div className="max-w-lg">
-
           {/* Eyebrow */}
           <div className="flex items-center gap-3 mb-4" aria-hidden="true">
             <div className="h-px w-10 bg-brand-gold" />
@@ -95,10 +93,7 @@ export function Hero() {
           </h1>
 
           {/* Gold divider */}
-          <div
-            className="w-12 h-0.5 bg-brand-gold mb-4"
-            aria-hidden="true"
-          />
+          <div className="w-12 h-0.5 bg-brand-gold mb-4" aria-hidden="true" />
 
           {/* Subheading — secondary keywords */}
           <p
@@ -108,9 +103,9 @@ export function Hero() {
               maxWidth: "420px",
             }}
           >
-            Discover handcrafted Buddha statues, metal crafts, singing
-            bowls, and traditional Nepali handicrafts — made by skilled
-            Newari artisans and shipped worldwide from our workshop.
+            Discover handcrafted Buddha statues, metal crafts, and traditional
+            Nepali handicrafts — made by skilled Newari artisans and shipped
+            worldwide from our workshop.
           </p>
 
           {/* CTA buttons */}
@@ -163,9 +158,9 @@ export function Hero() {
               </p>
             </div>
 
-            <div className="w-px h-8 bg-white/15" aria-hidden="true" />
+            {/* <div className="w-px h-8 bg-white/15" aria-hidden="true" /> */}
 
-            <div>
+            {/* <div>
               <p
                 className="font-serif font-bold text-brand-gold leading-none mb-1"
                 style={{ fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)" }}
@@ -175,7 +170,7 @@ export function Hero() {
               <p className="text-white/45 text-[10px] tracking-wider uppercase">
                 Craft Categories
               </p>
-            </div>
+            </div> */}
 
             <div className="w-px h-8 bg-white/15" aria-hidden="true" />
 
@@ -191,7 +186,6 @@ export function Hero() {
               </p>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -205,7 +199,6 @@ export function Hero() {
         </span>
         <ChevronDown size={14} className="text-white/30 animate-bounce" />
       </div>
-
     </section>
   );
 }

@@ -9,6 +9,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/data/site-config";
+import DOMPurify from "isomorphic-dompurify";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -193,20 +194,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               max-w-none"
             style={{ fontSize: "clamp(0.9rem, 1.5vw, 1rem)" }}
           >
-            {post.content
-              ?.split("\n\n")
-              .map((paragraph, index) => {
-                const trimmed = paragraph.trim();
-                if (!trimmed) return null;
-
-                if (trimmed.startsWith("## ")) {
-                  return (
-                    <h2 key={index}>{trimmed.replace("## ", "")}</h2>
-                  );
-                }
-
-                return <p key={index}>{trimmed}</p>;
-              })}
+<div
+  className="prose prose-stone prose-headings:font-serif\n                prose-headings:text-brand-brown\n                prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3\n                prose-p:text-muted-foreground prose-p:leading-relaxed\n                prose-a:text-brand-maroon prose-a:no-underline\n                hover:prose-a:underline\n                max-w-none"
+  style={{ fontSize: "clamp(0.9rem, 1.5vw, 1rem)" }}
+  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content || "") }}
+/>
           </div>
 
           {/* CTA box at end of article */}

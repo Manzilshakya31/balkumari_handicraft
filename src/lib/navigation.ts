@@ -13,9 +13,7 @@ export const FOOTER_LINKS = {
     { label: "Buddha Statues", href: "/shop?category=buddha-statues" },
     { label: "Hindu Deities", href: "/shop?category=hindu-deities" },
     { label: "Metal Crafts", href: "/shop?category=metal-crafts" },
-    { label: "Singing Bowls", href: "/shop?category=singing-bowls" },
-    { label: "Ritual Items", href: "/shop?category=ritual-items" },
-    { label: "Thangka Paintings", href: "/shop?category=thangka" },
+
   ],
   company: [
     { label: "About Us", href: "/about" },

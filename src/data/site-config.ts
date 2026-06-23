@@ -1,10 +1,9 @@
-export const SITE_CONFIG = {
+﻿export const SITE_CONFIG = {
   businessName: "Balkumari Handicraft",
   legalName: "Balkumari Handicraft",
   tagline: "Authentic Handcrafted Nepali Handicrafts from Lalitpur",
   description:
-    "Discover authentic handmade Buddha statues, metal crafts, singing " +
-    "bowls, and traditional Nepali handicrafts. Crafted by skilled artisans " +
+    "Discover authentic handmade Buddha statues, metal crafts, and traditional Nepali handicrafts. Crafted by skilled artisans " +
     "in Lalitpur, Nepal. Direct from workshop to your home.",
   domain: "https://www.balkumarihandicraft.com.np",
   address: {
@@ -25,22 +24,22 @@ export const SITE_CONFIG = {
   whatsapp: "9779818706474",
   email: "",
   hours: {
-    display: "Sunday – Friday, 9:00 AM – 6:00 PM",
+    display: "Sunday to Friday, 9:00 AM - 6:00 PM",
     note: "Closed on Saturdays",
     schema: "Su-Fr 09:00-18:00",
   },
   social: {
     facebook: "https://www.facebook.com/profile.php?id=61584424653114",
-    instagram: "",
+    instagram: "https://www.instagram.com/handicraftbalkumari/",
     youtube: "",
     whatsapp: "9779818706474",
   },
   seo: {
     defaultTitle:
-      "Balkumari Handicraft | Authentic Nepali Crafts — Lalitpur, Nepal",
+      "Balkumari Handicraft | Authentic Nepali Crafts â€” Lalitpur, Nepal",
     titleTemplate: "%s | Balkumari Handicraft",
     defaultDescription:
-      "Handmade Buddha statues, metal crafts, singing bowls and " +
+      "Handmade Buddha statues, metal crafts, and " +
       "traditional Nepali handicrafts from Lalitpur. Shop authentic crafts " +
       "directly from our workshop in Nepal.",
     keywords: [
@@ -49,10 +48,8 @@ export const SITE_CONFIG = {
       "handmade crafts Lalitpur",
       "authentic Nepali crafts",
       "metal crafts Nepal",
-      "singing bowls Nepal",
       "buy handicrafts Nepal",
       "Hindu deity statues Nepal",
-      "thangka painting Nepal",
       "Newari crafts Lalitpur",
       "Balkumari Handicraft",
     ],
@@ -64,42 +61,21 @@ export const SITE_CONFIG = {
       label: "Buddha Statues",
       description:
         "Handcrafted copper and bronze Buddha statues from Lalitpur, Nepal",
-      icon: "🙏",
+      icon: "crown",
     },
     {
       slug: "hindu-deities",
       label: "Hindu Deities",
       description:
         "Traditional Hindu deity statues handmade by Newari artisans",
-      icon: "✨",
+      icon: "sparkles",
     },
     {
       slug: "metal-crafts",
       label: "Metal Crafts",
       description:
         "Authentic Nepali metal crafts and decorative items",
-      icon: "🔱",
-    },
-    {
-      slug: "singing-bowls",
-      label: "Singing Bowls",
-      description:
-        "Handmade Himalayan singing bowls for meditation and healing",
-      icon: "🎵",
-    },
-    {
-      slug: "ritual-items",
-      label: "Ritual Items",
-      description:
-        "Traditional Nepali ritual items and ceremonial objects",
-      icon: "🪔",
-    },
-    {
-      slug: "thangka",
-      label: "Thangka Paintings",
-      description:
-        "Hand-painted traditional Tibetan and Nepali thangka paintings",
-      icon: "🎨",
+      icon: "hammer",
     },
   ],
 } as const;

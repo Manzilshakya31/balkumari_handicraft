@@ -16,7 +16,6 @@ export function AboutPreview() {
     >
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[520px]">
-
           {/* ── Left panel — story ── */}
           <div
             className="py-16 lg:py-20 pr-0 lg:pr-14
@@ -25,12 +24,11 @@ export function AboutPreview() {
           >
             {/* Eyebrow */}
             <div className="flex items-center gap-3 mb-6">
-              <div
-                className="h-px w-8 bg-brand-gold"
-                aria-hidden="true"
-              />
-              <span className="text-brand-gold text-xs font-semibold
-                tracking-[0.2em] uppercase">
+              <div className="h-px w-8 bg-brand-gold" aria-hidden="true" />
+              <span
+                className="text-brand-gold text-xs font-semibold
+                tracking-[0.2em] uppercase"
+              >
                 Our Story
               </span>
             </div>
@@ -45,9 +43,7 @@ export function AboutPreview() {
               }}
             >
               25 Years of{" "}
-              <span className="text-brand-gold">
-                Authentic Craft
-              </span>
+              <span className="text-brand-gold">Authentic Craft</span>
             </h2>
 
             {/* Short story — no em dashes, short sentences */}
@@ -58,24 +54,22 @@ export function AboutPreview() {
               }}
             >
               <p>
-                Gyani Raj Shakya started with one goal: to learn
-                the craft properly. He spent years training beside
-                master artisans in Thapahiti, Lalitpur, mastering
-                the lost-wax casting process that has defined
-                Nepali metalwork for centuries.
+                Gyani Raj Shakya started with one goal: to learn the craft
+                properly. He spent years training beside master artisans in
+                Thapahiti, Lalitpur, mastering the lost-wax casting process that
+                has defined Nepali metalwork for centuries.
               </p>
               <p>
-                As his skills grew, so did his reach. He took
-                Nepali handicrafts to international exhibitions
-                in China, Bhutan, and beyond. The world responded.
-                Today, Balkumari Handicraft ships handcrafted
-                statues, singing bowls, and sacred art to
-                collectors and temples across every continent.
+                As his skills grew, so did his reach. He took Nepali handicrafts
+                to international exhibitions in China, Bhutan, and beyond. The
+                world responded. Today, Balkumari Handicraft ships handcrafted
+                statues, and sacred art to collectors and temples across every
+                continent.
               </p>
               <p>
-                Every piece carries the same commitment Gyani Raj
-                started with in 1999: complete authenticity,
-                genuine craftsmanship, nothing compromised.
+                Every piece carries the same commitment Gyani Raj started with
+                in 1999: complete authenticity, genuine craftsmanship, nothing
+                compromised.
               </p>
             </div>
 
@@ -119,9 +113,9 @@ export function AboutPreview() {
                   fontSize: "clamp(1.1rem, 2vw, 1.4rem)",
                 }}
               >
-                From the exhibition halls of China and Bhutan to
-                homes across five continents, every piece that
-                leaves our workshop carries the soul of Nepal.
+                From the exhibition halls of China and Bhutan to homes across
+                five continents, every piece that leaves our workshop carries
+                the soul of Nepal.
               </p>
               <footer>
                 <div className="flex items-center gap-3">
@@ -142,10 +136,7 @@ export function AboutPreview() {
             </blockquote>
 
             {/* Thin gold divider */}
-            <div
-              className="h-px bg-white/10 my-8"
-              aria-hidden="true"
-            />
+            <div className="h-px bg-white/10 my-8" aria-hidden="true" />
 
             {/* Origin badge */}
             <div className="flex items-center gap-3">
@@ -158,7 +149,6 @@ export function AboutPreview() {
               </p>
             </div>
           </div>
-
         </div>
 
         {/* ── Bottom stats strip ── */}
@@ -171,13 +161,15 @@ export function AboutPreview() {
               key={label}
               className={`
                 py-8 px-6 text-center
-                ${index < STATS.length - 1
-                  ? "border-b md:border-b-0 md:border-r border-white/10"
-                  : "border-b md:border-b-0"
+                ${
+                  index < STATS.length - 1
+                    ? "border-b md:border-b-0 md:border-r border-white/10"
+                    : "border-b md:border-b-0"
                 }
-                ${index % 2 === 0 && index < STATS.length - 1
-                  ? "border-r md:border-r-0"
-                  : ""
+                ${
+                  index % 2 === 0 && index < STATS.length - 1
+                    ? "border-r md:border-r-0"
+                    : ""
                 }
               `}
             >
@@ -190,17 +182,16 @@ export function AboutPreview() {
               >
                 {value}
               </p>
-              <p className="text-white text-xs font-semibold
-                uppercase tracking-wider mb-0.5">
+              <p
+                className="text-white text-xs font-semibold
+                uppercase tracking-wider mb-0.5"
+              >
                 {label}
               </p>
-              <p className="text-white/35 text-[10px]">
-                {context}
-              </p>
+              <p className="text-white/35 text-[10px]">{context}</p>
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

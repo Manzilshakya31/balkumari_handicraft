@@ -1,11 +1,14 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Search, SlidersHorizontal, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SITE_CONFIG } from "@/data/site-config";
+import { getCategoryLabel, getCategorySlug } from "@/lib/categories";
 import { cn } from "@/lib/utils";
+
+type ActiveCategory = "all" | NonNullable<ReturnType<typeof getCategorySlug>>;
 
 export type SupabaseShopProduct = {
   id: string;
@@ -29,13 +32,33 @@ export function ShopClient({
   initialCategory,
   initialSearch,
 }: ShopClientProps) {
-  const [activeCategory, setActiveCategory] = useState(initialCategory || "all");
+  const [activeCategory, setActiveCategory] = useState<ActiveCategory>(
+    getCategorySlug(initialCategory) ?? "all"
+  );
   const [searchQuery, setSearchQuery] = useState(initialSearch || "");
+
+  function selectCategory(category: ActiveCategory) {
+    setActiveCategory(category);
+
+    const params = new URLSearchParams(window.location.search);
+    if (category === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", category);
+    }
+
+    const query = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${query ? `?${query}` : ""}`
+    );
+  }
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchesCategory =
-        activeCategory === "all" || p.category === activeCategory;
+        activeCategory === "all" || getCategorySlug(p.category) === activeCategory;
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         q === "" ||
@@ -96,7 +119,7 @@ export function ShopClient({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setActiveCategory("all")}
+          onClick={() => selectCategory("all")}
           className={cn(
             "rounded-full px-4 h-8 text-xs font-semibold",
             "border transition-all duration-200",
@@ -114,15 +137,15 @@ export function ShopClient({
             key={cat.slug}
             variant="ghost"
             size="sm"
-            onClick={() => setActiveCategory(cat.label)}
+            onClick={() => selectCategory(cat.slug)}
             className={cn(
               "rounded-full px-4 h-8 text-xs font-semibold",
               "border transition-all duration-200",
-              activeCategory === cat.label
+              activeCategory === cat.slug
                 ? "bg-brand-maroon text-white border-brand-maroon"
                 : "bg-white text-muted-foreground border-brand-gold/20 hover:border-brand-gold hover:text-brand-maroon"
             )}
-            aria-pressed={activeCategory === cat.label}
+            aria-pressed={activeCategory === cat.slug}
           >
             {cat.label}
           </Button>
@@ -132,7 +155,7 @@ export function ShopClient({
       {/* Products grid */}
       {filteredProducts.length > 0 ? (
         <div
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5"
+          className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4"
           aria-label="Product listing"
         >
           {filteredProducts.map((product) => {
@@ -187,12 +210,12 @@ export function ShopClient({
                 </Link>
 
                 {/* Product info */}
-                <div className="p-4">
+                <div className="p-3 sm:p-4">
                   {product.category && (
-                    <span className="inline-block text-[10px] font-medium
+                    <span className="inline-block max-w-full truncate text-[10px] font-medium
                       bg-brand-cream text-brand-gold-dark px-2 py-0.5
                       rounded-full mb-2">
-                      {product.category}
+                      {getCategoryLabel(product.category)}
                     </span>
                   )}
 
@@ -220,15 +243,16 @@ export function ShopClient({
                     href={`https://wa.me/${SITE_CONFIG.whatsapp}?text=${whatsappMessage}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-1.5 w-full
-                      bg-brand-gold/10 hover:bg-brand-gold text-brand-gold-dark
-                      hover:text-white border border-brand-gold/30
-                      hover:border-brand-gold rounded-lg py-2 text-xs
-                      font-semibold transition-all duration-200"
+                    className="flex h-10 w-full items-center justify-center gap-1.5
+                      rounded-lg border border-brand-gold/30 bg-brand-gold/10
+                      px-2 text-[11px] font-semibold leading-none text-brand-gold-dark
+                      transition-all duration-200 hover:border-brand-gold
+                      hover:bg-brand-gold hover:text-white sm:h-auto sm:py-2 sm:text-xs"
                     aria-label={`Inquire about ${product.name} on WhatsApp`}
                   >
-                    <MessageCircle size={13} />
-                    Inquire on WhatsApp
+                    <MessageCircle size={13} className="shrink-0" />
+                    <span className="sm:hidden">Inquire</span>
+                    <span className="hidden sm:inline">Inquire on WhatsApp</span>
                   </a>
                 </div>
               </article>
@@ -237,7 +261,7 @@ export function ShopClient({
         </div>
       ) : (
         <div className="text-center py-20">
-          <p className="text-4xl mb-4" aria-hidden="true">🔍</p>
+          <p className="text-4xl mb-4" aria-hidden="true">ðŸ”</p>
           <h2 className="font-serif text-xl text-brand-brown mb-2">
             No products found
           </h2>
@@ -248,7 +272,7 @@ export function ShopClient({
             variant="outline"
             size="sm"
             onClick={() => {
-              setActiveCategory("all");
+              selectCategory("all");
               setSearchQuery("");
             }}
             className="rounded-full border-brand-maroon

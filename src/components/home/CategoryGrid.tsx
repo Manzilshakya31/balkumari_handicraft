@@ -1,407 +1,254 @@
-"use client";
+﻿"use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
+  ArrowRight,
   Crown,
-  Sparkles,
+  Flame,
   Hammer,
   Music,
-  Flame,
   Palette,
-  ArrowRight,
+  Sparkles,
 } from "lucide-react";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { SITE_CONFIG } from "@/data/site-config";
+import { createClient } from "@/lib/supabase";
+import { getCategorySlug, type CategorySlug } from "@/lib/categories";
+import { cn } from "@/lib/utils";
 
-const CATEGORIES = [
+type ProductImage = {
+  url: string;
+  sort_order: number;
+};
+
+type CategoryProduct = {
+  category: string | null;
+  product_images: ProductImage[];
+};
+
+type CategoryStats = {
+  count: number;
+  imageUrl?: string;
+};
+
+const CATEGORY_DETAILS: Record<
+  CategorySlug,
   {
-    slug: "buddha-statues",
-    label: "Buddha Statues",
-    description:
-      "Handcrafted copper and bronze Buddha statues using the ancient lost-wax casting method passed down through Newari artisan families.",
+    icon: typeof Crown;
+    short: string;
+    intent: string;
+    gradient: string;
+  }
+> = {
+  "buddha-statues": {
     icon: Crown,
-    size: "featured",
-    bg: "bg-[#2C1810]",
-    accentColor: "from-amber-900/40 to-transparent",
+    short: "Copper and bronze figures for shrines, collectors, and ceremonial spaces.",
+    intent: "Most collected",
+    gradient: "from-[#2c140c] via-[#5b2514]/90 to-[#120806]",
   },
-  {
-    slug: "hindu-deities",
-    label: "Hindu Deities",
-    description:
-      "Traditional deity statues handmade by Newari artisans.",
+  "hindu-deities": {
     icon: Sparkles,
-    size: "normal",
-    bg: "bg-[#1A0F0F]",
-    accentColor: "from-red-900/50 to-transparent",
+    short: "Newari-made deity statues with detailed ornament, posture, and finish work.",
+    intent: "Devotional pieces",
+    gradient: "from-[#3a0f12] via-[#741d1d]/90 to-[#160607]",
   },
-  {
-    slug: "metal-crafts",
-    label: "Metal Crafts",
-    description:
-      "Authentic decorative metalwork from Nepal.",
+  "metal-crafts": {
     icon: Hammer,
-    size: "normal",
-    bg: "bg-[#1C1A10]",
-    accentColor: "from-yellow-900/40 to-transparent",
+    short: "Decorative metalwork, repoussé details, and handmade Nepali objects.",
+    intent: "Home accents",
+    gradient: "from-[#271b0b] via-[#5a4216]/90 to-[#100b05]",
   },
-  {
-    slug: "singing-bowls",
-    label: "Singing Bowls",
-    description:
-      "Hand-hammered Himalayan singing bowls for meditation.",
-    icon: Music,
-    size: "normal",
-    bg: "bg-[#0F1A1A]",
-    accentColor: "from-teal-900/40 to-transparent",
-  },
-  {
-    slug: "ritual-items",
-    label: "Ritual Items",
-    description:
-      "Traditional ceremonial objects and sacred implements.",
-    icon: Flame,
-    size: "normal",
-    bg: "bg-[#1A0F18]",
-    accentColor: "from-purple-900/40 to-transparent",
-  },
-  {
-    slug: "thangka",
-    label: "Thangka Paintings",
-    description:
-      "Hand-painted traditional Tibetan and Nepali sacred paintings — each one a meditation in itself, taking weeks to complete.",
-    icon: Palette,
-    size: "wide",
-    bg: "bg-[#101A10]",
-    accentColor: "from-green-900/40 to-transparent",
-  },
-];
+};
 
-function DecorativePattern({ slug }: { slug: string }) {
-  if (slug === "buddha-statues") {
-    return (
-      <svg
-        className="absolute right-0 top-0 w-56 h-56 opacity-[0.06]
-          translate-x-10 -translate-y-10 pointer-events-none"
-        viewBox="0 0 200 200"
-        fill="none"
-        aria-hidden="true"
-      >
-        {[90, 70, 50, 30, 10].map((r) => (
-          <circle
-            key={r}
-            cx="100" cy="100" r={r}
-            stroke="#C9A84C" strokeWidth="0.8"
-          />
-        ))}
-        {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((a) => (
-          <line
-            key={a}
-            x1="100" y1="100"
-            x2={100 + 90 * Math.cos((a * Math.PI) / 180)}
-            y2={100 + 90 * Math.sin((a * Math.PI) / 180)}
-            stroke="#C9A84C" strokeWidth="0.4"
-          />
-        ))}
-      </svg>
-    );
-  }
+const FALLBACK_IMAGE = "/images/heri-bg.png";
 
-  if (slug === "thangka") {
-    return (
-      <svg
-        className="absolute right-0 top-0 h-full w-64 opacity-[0.05]
-          pointer-events-none"
-        viewBox="0 0 200 120"
-        fill="none"
-        preserveAspectRatio="xMaxYMid meet"
-        aria-hidden="true"
-      >
-        {[0, 20, 40, 60, 80, 100].map((y) => (
-          <path
-            key={y}
-            d={`M0 ${y} Q50 ${y - 15} 100 ${y} Q150 ${y + 15} 200 ${y}`}
-            stroke="#C9A84C" strokeWidth="0.6"
-          />
-        ))}
-        {[40, 100, 160].map((x) => (
-          <circle key={x} cx={x} cy="60" r="20"
-            stroke="#C9A84C" strokeWidth="0.6" />
-        ))}
-      </svg>
-    );
-  }
+function formatProductCount(count: number): string {
+  return `${count} product${count === 1 ? "" : "s"}`;
+}
 
-  return (
-    <svg
-      className="absolute right-0 bottom-0 w-32 h-32 opacity-[0.05]
-        translate-x-4 translate-y-4 pointer-events-none"
-      viewBox="0 0 128 128"
-      fill="none"
-      aria-hidden="true"
-    >
-      {[60, 44, 28].map((r) => (
-        <rect
-          key={r}
-          x={64 - r} y={64 - r}
-          width={r * 2} height={r * 2}
-          stroke="#C9A84C" strokeWidth="0.6"
-          transform="rotate(45 64 64)"
-        />
-      ))}
-    </svg>
-  );
+function firstImage(images: ProductImage[] | undefined): string | undefined {
+  return [...(images ?? [])].sort((a, b) => a.sort_order - b.sort_order)[0]?.url;
 }
 
 export function CategoryGrid() {
-  const featured = CATEGORIES[0];
-  const middle = CATEGORIES.slice(1, 5);
-  const wide = CATEGORIES[5];
+  const [stats, setStats] = useState<Partial<Record<CategorySlug, CategoryStats>>>({});
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadCategoryStats() {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from("products")
+        .select("category, product_images(url, sort_order)")
+        .eq("status", "active");
+
+      if (!isMounted || !data) return;
+
+      const nextStats: Partial<Record<CategorySlug, CategoryStats>> = {};
+      for (const product of data as CategoryProduct[]) {
+        const slug = getCategorySlug(product.category);
+        if (!slug) continue;
+
+        const current = nextStats[slug] ?? { count: 0 };
+        nextStats[slug] = {
+          count: current.count + 1,
+          imageUrl: current.imageUrl ?? firstImage(product.product_images),
+        };
+      }
+
+      setStats(nextStats);
+    }
+
+    loadCategoryStats();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const categories = useMemo(
+    () =>
+      SITE_CONFIG.categories.map((category) => ({
+        ...category,
+        ...CATEGORY_DETAILS[category.slug],
+        stats: stats[category.slug],
+      })),
+    [stats]
+  );
+
+  const featured = categories[0];
+  const secondary = categories.slice(1);
+  const FeaturedIcon = featured.icon;
 
   return (
     <section
-      className="section-padding bg-white"
+      className="section-padding bg-gradient-to-b from-white to-brand-cream/60 border-y border-brand-gold/10"
       aria-labelledby="categories-heading"
     >
       <div className="container-custom">
-        <SectionHeading
-          eyebrow="Browse by Category"
-          title="Our"
-          titleHighlight="Collections"
-          description="Six centuries of Newari artisan tradition,
-            preserved in every handcrafted piece."
-        />
-
-        <div className="flex flex-col gap-4">
-
-          {/* Row 1 — Featured left + 2x2 grid right */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            {/* Featured card — spans 2 rows on desktop */}
-            <Link
-              href={`/shop?category=${featured.slug}`}
-              className={`
-                group relative overflow-hidden rounded-2xl
-                ${featured.bg} flex flex-col justify-end
-                p-7 md:p-8
-                min-h-[280px] md:min-h-0 md:row-span-2
-                transition-all duration-500
-                hover:-translate-y-1
-                hover:shadow-2xl hover:shadow-black/50
-                md:col-span-1
-              `}
-              style={{ minHeight: "clamp(280px, 40vw, 480px)" }}
-              aria-label={`Browse ${featured.label}`}
+        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <div className="mb-3 flex items-center gap-3" aria-hidden="true">
+              <div className="h-px w-8 bg-brand-gold" />
+              <span className="text-brand-gold text-xs font-semibold tracking-[0.2em] uppercase">
+                Browse by category
+              </span>
+            </div>
+            <h2
+              id="categories-heading"
+              className="font-serif font-bold text-brand-brown leading-tight mb-3"
+              style={{ fontSize: "clamp(1.75rem, 3.4vw, 2.75rem)" }}
             >
-              <DecorativePattern slug={featured.slug} />
+              Find the right <span className="text-brand-maroon">craft tradition</span>
+            </h2>
+            <p className="text-muted-foreground leading-relaxed max-w-xl">
+              Start with the object type, then narrow by material, size, and finish in the shop.
+              Each collection is handmade in Lalitpur by skilled Newari artisans.
+            </p>
+          </div>
 
-              {/* Gradient */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br
-                  ${featured.accentColor}`}
-                aria-hidden="true"
-              />
+          <Link
+            href="/shop"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-brand-maroon px-5 text-sm font-semibold text-brand-maroon transition-colors hover:bg-brand-maroon hover:text-white lg:flex-shrink-0"
+          >
+            View all products
+            <ArrowRight size={15} />
+          </Link>
+        </div>
 
-              {/* Bottom text gradient */}
-              <div
-                className="absolute bottom-0 left-0 right-0 h-3/4
-                  bg-gradient-to-t from-black/70 to-transparent"
-                aria-hidden="true"
-              />
+        <div className="grid gap-4 lg:grid-cols-[1.1fr_1.9fr] lg:gap-5">
+          <Link
+            href={`/shop?category=${featured.slug}`}
+            className="group relative min-h-[360px] overflow-hidden rounded-lg bg-brand-brown text-white shadow-xl shadow-brand-brown/10 transition-transform duration-300 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:ring-offset-2"
+            aria-label={`Browse ${featured.label}`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={featured.stats?.imageUrl ?? FALLBACK_IMAGE}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover opacity-70 transition-transform duration-700 group-hover:scale-105"
+              aria-hidden="true"
+            />
+            <div className={cn("absolute inset-0 bg-gradient-to-br", featured.gradient)} aria-hidden="true" />
+            <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 to-transparent" aria-hidden="true" />
 
-              {/* Gold top line */}
-              <div
-                className="absolute top-0 left-0 right-0 h-[2px]
-                  bg-gradient-to-r from-transparent via-brand-gold
-                  to-transparent scale-x-0 group-hover:scale-x-100
-                  transition-transform duration-500"
-                aria-hidden="true"
-              />
+            <div className="relative flex h-full min-h-[360px] flex-col justify-between p-6 md:p-8">
+              <div className="flex items-center justify-between gap-4">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-brand-gold/30 bg-black/20 text-brand-gold backdrop-blur-sm">
+                  <FeaturedIcon size={20} />
+                </span>
+                <span className="rounded-full border border-white/15 bg-black/20 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm">
+                  {featured.intent}
+                </span>
+              </div>
 
-              <div className="relative">
-                <div
-                  className="w-12 h-12 rounded-xl bg-brand-gold/10
-                    border border-brand-gold/25 flex items-center
-                    justify-center mb-5 group-hover:bg-brand-gold/20
-                    transition-colors duration-300"
-                >
-                  <Crown size={22} className="text-brand-gold" />
-                </div>
-
-                <h3
-                  className="font-serif font-bold text-white
-                    leading-tight mb-3 text-2xl md:text-3xl
-                    group-hover:text-brand-gold-light
-                    transition-colors duration-300"
-                >
+              <div className="max-w-sm">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-brand-gold">
+                  {featured.stats?.count ? formatProductCount(featured.stats.count) : "Signature collection"}
+                </p>
+                <h3 className="mb-3 font-serif text-3xl font-bold leading-tight text-white md:text-4xl">
                   {featured.label}
                 </h3>
-
-                <p className="text-white/50 text-sm leading-relaxed
-                  mb-5 max-w-[220px]">
-                  {featured.description}
+                <p className="mb-6 max-w-[18rem] text-sm leading-relaxed text-white/70">
+                  {featured.short}
                 </p>
-
-                <div
-                  className="flex items-center gap-2 text-brand-gold
-                    text-[11px] font-bold uppercase tracking-[0.15em]
-                    group-hover:gap-3 transition-all duration-300"
-                >
-                  <span>Explore Collection</span>
-                  <ArrowRight size={11} />
-                </div>
+                <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-brand-gold transition-all group-hover:gap-3">
+                  Explore collection
+                  <ArrowRight size={13} />
+                </span>
               </div>
-            </Link>
+            </div>
+          </Link>
 
-            {/* 4 normal cards — 2x2 grid */}
-            {middle.map((cat) => {
-              const Icon = cat.icon;
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {secondary.map((category) => {
+              const Icon = category.icon;
               return (
                 <Link
-                  key={cat.slug}
-                  href={`/shop?category=${cat.slug}`}
-                  className={`
-                    group relative overflow-hidden rounded-2xl
-                    ${cat.bg} flex flex-col justify-end
-                    p-5 min-h-[160px] md:min-h-[180px]
-                    transition-all duration-400
-                    hover:-translate-y-0.5
-                    hover:shadow-xl hover:shadow-black/40
-                  `}
-                  aria-label={`Browse ${cat.label}`}
+                  key={category.slug}
+                  href={`/shop?category=${category.slug}`}
+                  className="group relative min-h-[210px] overflow-hidden rounded-lg border border-brand-gold/15 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-gold/40 hover:shadow-xl hover:shadow-brand-brown/10 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:ring-offset-2"
+                  aria-label={`Browse ${category.label}`}
                 >
-                  <DecorativePattern slug={cat.slug} />
+                  <div className="absolute inset-x-0 top-0 h-24 overflow-hidden" aria-hidden="true">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={category.stats?.imageUrl ?? FALLBACK_IMAGE}
+                      alt=""
+                      className="h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className={cn("absolute inset-0 bg-gradient-to-r", category.gradient)} />
+                  </div>
 
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br
-                      ${cat.accentColor}`}
-                    aria-hidden="true"
-                  />
+                  <div className="relative flex min-h-[210px] flex-col justify-between p-5 pt-20">
+                    <div>
+                      <div className="mb-4 flex items-center justify-between gap-3">
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-brand-gold/20 bg-white text-brand-gold-dark shadow-sm">
+                          <Icon size={17} />
+                        </span>
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {category.stats?.count ? formatProductCount(category.stats.count) : category.intent}
+                        </span>
+                      </div>
 
-                  <div
-                    className="absolute bottom-0 left-0 right-0 h-2/3
-                      bg-gradient-to-t from-black/60 to-transparent"
-                    aria-hidden="true"
-                  />
-
-                  <div
-                    className="absolute top-0 left-0 right-0 h-[2px]
-                      bg-gradient-to-r from-transparent via-brand-gold
-                      to-transparent scale-x-0 group-hover:scale-x-100
-                      transition-transform duration-500"
-                    aria-hidden="true"
-                  />
-
-                  <div className="relative">
-                    <div
-                      className="w-9 h-9 rounded-lg bg-brand-gold/10
-                        border border-brand-gold/20 flex items-center
-                        justify-center mb-3 group-hover:bg-brand-gold/20
-                        transition-colors duration-300"
-                    >
-                      <Icon size={16} className="text-brand-gold" />
+                      <h3 className="mb-2 font-serif text-xl font-bold leading-tight text-brand-brown transition-colors group-hover:text-brand-maroon">
+                        {category.label}
+                      </h3>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {category.short}
+                      </p>
                     </div>
 
-                    <h3
-                      className="font-serif font-semibold text-white
-                        text-base leading-tight mb-2
-                        group-hover:text-brand-gold-light
-                        transition-colors duration-300"
-                    >
-                      {cat.label}
-                    </h3>
-
-                    <div
-                      className="flex items-center gap-1.5 text-brand-gold
-                        text-[10px] font-bold uppercase tracking-[0.15em]
-                        group-hover:gap-2.5 transition-all duration-300"
-                    >
-                      <span>Explore</span>
-                      <ArrowRight size={9} />
-                    </div>
+                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-brand-gold-dark transition-all group-hover:gap-3">
+                      Browse
+                      <ArrowRight size={12} />
+                    </span>
                   </div>
                 </Link>
               );
             })}
           </div>
-
-          {/* Row 2 — Wide banner card full width */}
-          {wide && (
-            <Link
-              href={`/shop?category=${wide.slug}`}
-              className={`
-                group relative overflow-hidden rounded-2xl
-                ${wide.bg} flex flex-col justify-end
-                p-6 md:p-8 min-h-[140px] md:min-h-[160px]
-                transition-all duration-500
-                hover:-translate-y-0.5
-                hover:shadow-xl hover:shadow-black/40
-              `}
-              aria-label={`Browse ${wide.label}`}
-            >
-              <DecorativePattern slug={wide.slug} />
-
-              <div
-                className={`absolute inset-0 bg-gradient-to-r
-                  ${wide.accentColor}`}
-                aria-hidden="true"
-              />
-
-              <div
-                className="absolute bottom-0 left-0 right-0 h-full
-                  bg-gradient-to-t from-black/50 via-transparent
-                  to-transparent"
-                aria-hidden="true"
-              />
-
-              <div
-                className="absolute top-0 left-0 right-0 h-[2px]
-                  bg-gradient-to-r from-transparent via-brand-gold
-                  to-transparent scale-x-0 group-hover:scale-x-100
-                  transition-transform duration-500"
-                aria-hidden="true"
-              />
-
-              {/* Horizontal layout for wide card */}
-              <div className="relative flex items-end justify-between
-                gap-6">
-                <div className="flex items-center gap-5">
-                  <div
-                    className="w-11 h-11 rounded-xl bg-brand-gold/10
-                      border border-brand-gold/20 flex items-center
-                      justify-center flex-shrink-0
-                      group-hover:bg-brand-gold/20
-                      transition-colors duration-300"
-                  >
-                    <Palette size={18} className="text-brand-gold" />
-                  </div>
-                  <div>
-                    <h3
-                      className="font-serif font-bold text-white
-                        text-lg md:text-xl leading-tight mb-1
-                        group-hover:text-brand-gold-light
-                        transition-colors duration-300"
-                    >
-                      {wide.label}
-                    </h3>
-                    <p className="text-white/45 text-xs md:text-sm
-                      max-w-md hidden sm:block">
-                      {wide.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className="flex items-center gap-2 text-brand-gold
-                    text-[11px] font-bold uppercase tracking-[0.15em]
-                    flex-shrink-0 group-hover:gap-3
-                    transition-all duration-300"
-                >
-                  <span>Explore</span>
-                  <ArrowRight size={11} />
-                </div>
-              </div>
-            </Link>
-          )}
-
         </div>
       </div>
     </section>

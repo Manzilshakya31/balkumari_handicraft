@@ -1,10 +1,7 @@
 export type Category =
   | "buddha-statues"
   | "hindu-deities"
-  | "metal-crafts"
-  | "singing-bowls"
-  | "ritual-items"
-  | "thangka";
+  | "metal-crafts";
 
 export interface Product {
   id: string;

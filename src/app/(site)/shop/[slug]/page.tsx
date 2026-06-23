@@ -6,8 +6,10 @@ import { MapPin, MessageCircle, ChevronRight, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { SITE_CONFIG } from "@/data/site-config";
+import { getCategoryLabel, getCategorySlug } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // ── Types ──────────────────────────────────────────────────────
 
@@ -63,7 +65,8 @@ async function getProduct(slug: string): Promise<SupabaseProduct | null> {
     .from("products")
     .select(
       "id, sku, name, description, price, category, material, dimensions, origin, stock, status, is_available, created_at, product_images(id, url, alt_text, sort_order)"
-    );
+    )
+    .order("sort_order", { referencedTable: "product_images", ascending: true });
 
   const { data, error } = isUUID
     ? await base.eq("id", slug).single()
@@ -119,6 +122,8 @@ export default async function ShopProductPage({
     .map((img) => img.url);
 
   const inStock = product.is_available;
+  const categorySlug = getCategorySlug(product.category);
+  const categoryLabel = getCategoryLabel(product.category);
 
   const whatsappMessage = encodeURIComponent(
     `Hello, I am interested in purchasing: ${product.name}${
@@ -131,6 +136,7 @@ export default async function ShopProductPage({
   const { data: relatedRaw } = await supabase
     .from("products")
     .select("id, sku, name, price, product_images(url, alt_text, sort_order)")
+    .order("sort_order", { referencedTable: "product_images", ascending: true })
     .eq("category", product.category ?? "")
     .eq("status", "active")
     .neq("id", product.id)
@@ -167,10 +173,10 @@ export default async function ShopProductPage({
                 <li aria-hidden="true"><ChevronRight size={12} /></li>
                 <li>
                   <Link
-                    href={`/shop?category=${encodeURIComponent(product.category)}`}
+                    href={`/shop?category=${categorySlug ?? encodeURIComponent(product.category)}`}
                     className="hover:text-brand-maroon transition-colors"
                   >
-                    {product.category}
+                    {categoryLabel}
                   </Link>
                 </li>
               </>
@@ -219,7 +225,7 @@ export default async function ShopProductPage({
                 className="text-xs font-medium bg-brand-cream
                   text-brand-gold-dark border-0 mb-3 px-3 py-1"
               >
-                {product.category}
+                {categoryLabel}
               </Badge>
             )}
 

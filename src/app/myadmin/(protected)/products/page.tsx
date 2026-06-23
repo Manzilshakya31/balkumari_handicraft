@@ -65,9 +65,6 @@ const CATEGORIES = [
   "Buddha Statues",
   "Hindu Deity Statues",
   "Metal Crafts",
-  "Singing Bowls",
-  "Ritual Items",
-  "Thangka Paintings",
   "Other",
 ];
 
@@ -217,7 +214,8 @@ export default function ProductsPage() {
       name: form.name.trim(),
       category: form.category || null,
       price: form.price !== "" ? Number(form.price) : null,
-      bargain_price: form.bargain_price !== "" ? Number(form.bargain_price) : null,
+      bargain_price:
+        form.bargain_price !== "" ? Number(form.bargain_price) : null,
       material: form.material.trim() || null,
       dimensions: form.dimensions.trim() || null,
       origin: form.origin.trim() || "Nepal",
@@ -281,20 +279,100 @@ export default function ProductsPage() {
     }
   }
 
+  // ── CSV Export ───────────────────────────────────────────────
+
+  function handleExportCSV() {
+    const headers = [
+      "SKU",
+      "Name",
+      "Category",
+      "Price",
+      "Bargain Price",
+      "Material",
+      "Dimensions",
+      "Origin",
+      "Stock",
+      "Is Available",
+      "Status",
+      "Created At",
+    ];
+
+    const fields: (keyof Product)[] = [
+      "sku",
+      "name",
+      "category",
+      "price",
+      "bargain_price",
+      "material",
+      "dimensions",
+      "origin",
+      "stock",
+      "is_available",
+      "status",
+      "created_at",
+    ];
+
+    const escapeCSV = (val: unknown) => {
+      if (val === null || val === undefined) return "";
+      const str = String(val);
+      if (/[",\r\n]/.test(str)) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const csvRows = [];
+    csvRows.push(headers.map((h) => escapeCSV(h)).join(","));
+
+    for (const product of products) {
+      const row = fields.map((field) => escapeCSV(product[field]));
+      csvRows.push(row.join(","));
+    }
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+
+    link.setAttribute("download", `balkumari-products-${yyyy}-${mm}-${dd}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
   // ── Render ───────────────────────────────────────────────────
 
   return (
     <div>
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Products Management</h1>
-        <button
-          onClick={openAdd}
-          className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white
-            text-sm font-semibold rounded-md transition-colors"
-        >
-          + Add New Product
-        </button>
+        <h1 className="text-2xl font-bold text-gray-800">
+          Products Management
+        </h1>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExportCSV}
+            disabled={loading}
+            className="px-4 py-2 border border-gray-300 hover:bg-gray-50 text-gray-700
+              text-sm font-semibold rounded-md transition-colors disabled:opacity-50"
+          >
+            Export CSV
+          </button>
+          <button
+            onClick={openAdd}
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white
+              text-sm font-semibold rounded-md transition-colors"
+          >
+            + Add New Product
+          </button>
+        </div>
       </div>
 
       {/* Product table */}
@@ -317,7 +395,17 @@ export default function ProductsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  {["SKU", "Image", "Name", "Category", "Price (NPR)", "Bargain Price", "Available", "Status", "Actions"].map((h) => (
+                  {[
+                    "SKU",
+                    "Image",
+                    "Name",
+                    "Category",
+                    "Price (NPR)",
+                    "Bargain Price",
+                    "Available",
+                    "Status",
+                    "Actions",
+                  ].map((h) => (
                     <th
                       key={h}
                       className="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap"
@@ -366,7 +454,9 @@ export default function ProductsPage() {
                       </td>
 
                       {/* Category */}
-                      <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{p.category ?? "—"}</td>
+                      <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                        {p.category ?? "—"}
+                      </td>
 
                       {/* Public Price */}
                       <td className="px-4 py-3 text-gray-800 whitespace-nowrap">
@@ -376,8 +466,13 @@ export default function ProductsPage() {
                       {/* Bargain Price */}
                       <td className="px-4 py-3 whitespace-nowrap">
                         <div className="flex items-center gap-1.5 text-gray-500">
-                          <Lock size={11} className="flex-shrink-0 text-gray-400" />
-                          <span className="text-xs">{formatPrice(p.bargain_price)}</span>
+                          <Lock
+                            size={11}
+                            className="flex-shrink-0 text-gray-400"
+                          />
+                          <span className="text-xs">
+                            {formatPrice(p.bargain_price)}
+                          </span>
                         </div>
                       </td>
 
@@ -466,7 +561,6 @@ export default function ProductsPage() {
             </div>
 
             <form onSubmit={handleSave} className="space-y-4">
-
               {/* 1. Product Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -490,7 +584,9 @@ export default function ProductsPage() {
                 </label>
                 <select
                   value={form.category}
-                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, category: e.target.value })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
                 >
@@ -515,7 +611,9 @@ export default function ProductsPage() {
                   <input
                     type="number"
                     value={form.price}
-                    onChange={(e) => setForm({ ...form, price: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, price: e.target.value })
+                    }
                     min="0"
                     step="1"
                     placeholder="0"
@@ -538,7 +636,9 @@ export default function ProductsPage() {
                   <input
                     type="number"
                     value={form.bargain_price}
-                    onChange={(e) => setForm({ ...form, bargain_price: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, bargain_price: e.target.value })
+                    }
                     min="0"
                     step="1"
                     placeholder="0"
@@ -559,7 +659,9 @@ export default function ProductsPage() {
                 <input
                   type="text"
                   value={form.material}
-                  onChange={(e) => setForm({ ...form, material: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, material: e.target.value })
+                  }
                   placeholder="e.g. Copper with gold plating"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
@@ -574,7 +676,9 @@ export default function ProductsPage() {
                 <input
                   type="text"
                   value={form.dimensions}
-                  onChange={(e) => setForm({ ...form, dimensions: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, dimensions: e.target.value })
+                  }
                   placeholder="e.g. 10cm x 5cm x 5cm"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
                     focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
@@ -590,7 +694,9 @@ export default function ProductsPage() {
                   <input
                     type="text"
                     value={form.origin}
-                    onChange={(e) => setForm({ ...form, origin: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, origin: e.target.value })
+                    }
                     placeholder="Nepal"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
                       focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
@@ -603,7 +709,9 @@ export default function ProductsPage() {
                   <input
                     type="number"
                     value={form.stock}
-                    onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, stock: e.target.value })
+                    }
                     min="0"
                     step="1"
                     placeholder="0"
@@ -620,7 +728,9 @@ export default function ProductsPage() {
                 </label>
                 <textarea
                   value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                   rows={4}
                   placeholder="Describe the product…"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm
@@ -634,7 +744,9 @@ export default function ProductsPage() {
                   type="button"
                   role="switch"
                   aria-checked={form.is_available}
-                  onClick={() => setForm({ ...form, is_available: !form.is_available })}
+                  onClick={() =>
+                    setForm({ ...form, is_available: !form.is_available })
+                  }
                   className={`relative inline-flex h-5 w-9 flex-shrink-0 mt-0.5 rounded-full
                     transition-colors duration-200 focus:outline-none focus:ring-2
                     focus:ring-amber-400 focus:ring-offset-1 ${
@@ -649,7 +761,9 @@ export default function ProductsPage() {
                   />
                 </button>
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Currently Available</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    Currently Available
+                  </p>
                   <p className="text-xs text-gray-400 mt-0.5">
                     {form.is_available
                       ? 'Customers see "Available — Inquire for pricing"'
@@ -684,7 +798,9 @@ export default function ProductsPage() {
                 {/* Existing images (edit mode) */}
                 {existingImages.length > 0 && (
                   <div className="mb-3">
-                    <p className="text-xs text-gray-400 mb-2">Current images — click × to remove</p>
+                    <p className="text-xs text-gray-400 mb-2">
+                      Current images — click × to remove
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {existingImages.map((img) => (
                         <div
@@ -705,7 +821,9 @@ export default function ProductsPage() {
                               justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                             aria-label="Delete image"
                           >
-                            <span className="text-white text-xl font-bold leading-none">×</span>
+                            <span className="text-white text-xl font-bold leading-none">
+                              ×
+                            </span>
                           </button>
                         </div>
                       ))}
@@ -739,7 +857,9 @@ export default function ProductsPage() {
                               justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                             aria-label="Remove image"
                           >
-                            <span className="text-white text-xl font-bold leading-none">×</span>
+                            <span className="text-white text-xl font-bold leading-none">
+                              ×
+                            </span>
                           </button>
                         </div>
                       ))}
@@ -753,7 +873,9 @@ export default function ProductsPage() {
                     type="url"
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addImageUrl())}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && (e.preventDefault(), addImageUrl())
+                    }
                     placeholder="https://res.cloudinary.com/..."
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm
                       focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
@@ -768,7 +890,8 @@ export default function ProductsPage() {
                   </button>
                 </div>
                 <p className="text-xs text-gray-400 mt-1">
-                  Paste an image URL and click + Add. Repeat for multiple images.
+                  Paste an image URL and click + Add. Repeat for multiple
+                  images.
                 </p>
               </div>
 
@@ -796,8 +919,12 @@ export default function ProductsPage() {
                     text-sm font-semibold rounded-md transition-colors disabled:opacity-60"
                 >
                   {saving
-                    ? editing ? "Saving…" : "Adding…"
-                    : editing ? "Save Changes" : "Add Product"}
+                    ? editing
+                      ? "Saving…"
+                      : "Adding…"
+                    : editing
+                      ? "Save Changes"
+                      : "Add Product"}
                 </button>
               </div>
             </form>
@@ -809,10 +936,15 @@ export default function ProductsPage() {
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm shadow-xl">
-            <h2 className="text-base font-bold text-gray-800 mb-2">Delete Product</h2>
+            <h2 className="text-base font-bold text-gray-800 mb-2">
+              Delete Product
+            </h2>
             <p className="text-sm text-gray-600 mb-1">
               Are you sure you want to delete{" "}
-              <span className="font-semibold text-gray-800">{deleteTarget.name}</span>?
+              <span className="font-semibold text-gray-800">
+                {deleteTarget.name}
+              </span>
+              ?
             </p>
             <p className="text-sm text-red-500 mb-5">This cannot be undone.</p>
 
@@ -824,7 +956,10 @@ export default function ProductsPage() {
 
             <div className="flex gap-3">
               <button
-                onClick={() => { setDeleteTarget(null); setDeleteError(""); }}
+                onClick={() => {
+                  setDeleteTarget(null);
+                  setDeleteError("");
+                }}
                 disabled={deleting}
                 className="flex-1 py-2 border border-gray-300 rounded-md text-sm
                   font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-60"

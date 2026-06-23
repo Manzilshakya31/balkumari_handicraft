@@ -1,21 +1,24 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { createClient } from "@supabase/supabase-js";
-import { ShopClient, type SupabaseShopProduct } from "@/components/shop/ShopClient";
+import {
+  ShopClient,
+  type SupabaseShopProduct,
+} from "@/components/shop/ShopClient";
 import { SITE_CONFIG } from "@/data/site-config";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Shop Authentic Nepali Handicrafts",
   description:
-    "Browse our full collection of handmade Nepali handicrafts including Buddha statues, metal crafts, singing bowls, Hindu deity statues and thangka paintings from Lalitpur, Nepal.",
+    "Browse our full collection of handmade Nepali handicrafts including Buddha statues, Hindu deity statues and metal crafts from Lalitpur, Nepal.",
   keywords: [
     "buy Nepali handicrafts",
     "Buddha statue Nepal shop",
     "handmade crafts Lalitpur",
     "authentic Nepali crafts online",
     "metal crafts Nepal",
-    "singing bowls buy Nepal",
   ],
   alternates: {
     canonical: `${SITE_CONFIG.domain}/shop`,
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Shop Authentic Nepali Handicrafts | Balkumari Handicraft",
     description:
-      "Browse handmade Buddha statues, metal crafts, singing bowls and traditional Nepali handicrafts from Lalitpur, Nepal.",
+      "Browse handmade Buddha statues, metal crafts and traditional Nepali handicrafts from Lalitpur, Nepal.",
     url: `${SITE_CONFIG.domain}/shop`,
   },
 };
@@ -31,7 +34,7 @@ export const metadata: Metadata = {
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );
 }
 
@@ -44,9 +47,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const { data } = await supabase
     .from("products")
     .select(
-      "id, sku, name, category, price, material, is_available, product_images(url, alt_text, sort_order)"
+      "id, sku, name, category, price, material, is_available, product_images(url, alt_text, sort_order)",
     )
     .eq("status", "active")
+    .order("sort_order", { referencedTable: "product_images", ascending: true })
     .order("created_at", { ascending: false });
 
   const products = (data ?? []) as SupabaseShopProduct[];
@@ -73,8 +77,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             className="text-white/55 mt-3 max-w-xl"
             style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)" }}
           >
-            Handcrafted by skilled Newari artisans in Lalitpur, Nepal.
-            Each piece is unique and made using traditional techniques.
+            Handcrafted by skilled Newari artisans in Lalitpur, Nepal. Each
+            piece is unique and made using traditional techniques.
           </p>
         </div>
       </div>

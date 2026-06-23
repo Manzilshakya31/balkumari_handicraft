@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react";
+﻿import { MessageCircle } from "lucide-react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { SITE_CONFIG } from "@/data/site-config";
@@ -18,7 +18,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2
+        className="fixed bottom-6 right-6 z-50 hidden items-center gap-2 sm:flex
           text-white rounded-full shadow-lg shadow-black/25
           transition-all duration-200 hover:scale-105
           px-4 py-3 text-sm font-semibold"
