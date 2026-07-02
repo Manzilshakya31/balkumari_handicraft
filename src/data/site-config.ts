@@ -1,4 +1,4 @@
-﻿export const SITE_CONFIG = {
+export const SITE_CONFIG = {
   businessName: "Balkumari Handicraft",
   legalName: "Balkumari Handicraft",
   tagline: "Authentic Handcrafted Nepali Handicrafts from Lalitpur",
@@ -21,7 +21,7 @@
   googleMapsUrl: "https://maps.app.goo.gl/ZrdXsfPsLSRF3AFn7",
   phone: "+977-9818706474",
   phoneDisplay: "+977 9818706474",
-  whatsapp: "9779818706474",
+  whatsapp: "9779762419645",
   email: "",
   hours: {
     display: "Sunday to Friday, 9:00 AM - 6:00 PM",
@@ -32,11 +32,11 @@
     facebook: "https://www.facebook.com/profile.php?id=61584424653114",
     instagram: "https://www.instagram.com/handicraftbalkumari/",
     youtube: "",
-    whatsapp: "9779818706474",
+    whatsapp: "9779762419645",
   },
   seo: {
     defaultTitle:
-      "Balkumari Handicraft | Authentic Nepali Crafts â€” Lalitpur, Nepal",
+      "Balkumari Handicraft | Authentic Nepali Crafts — Lalitpur, Nepal",
     titleTemplate: "%s | Balkumari Handicraft",
     defaultDescription:
       "Handmade Buddha statues, metal crafts, and " +
@@ -54,6 +54,10 @@
       "Balkumari Handicraft",
     ],
     ogImage: "/og-image.jpg",
+    logo: "/logo.png",
+    favicon: "/favicon-48x48.png",
+    icon192: "/icon-192.png",
+    icon512: "/icon-512.png",
   },
   categories: [
     {

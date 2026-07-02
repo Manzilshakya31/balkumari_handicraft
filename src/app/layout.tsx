@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: SITE_CONFIG.seo.ogImage,
         width: 1200,
         height: 630,
-        alt: "Balkumari Handicraft — Authentic Nepali Crafts from Lalitpur, Nepal",
+        alt: "Balkumari Handicraft logo and authentic Nepali crafts from Lalitpur, Nepal",
       },
     ],
   },
@@ -72,11 +72,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico?v=2", sizes: "any" },
-      { url: "/favicon-32x32.png?v=2", type: "image/png", sizes: "32x32" },
+      { url: "/favicon.ico?v=3", sizes: "any" },
+      { url: `${SITE_CONFIG.seo.favicon}?v=3`, type: "image/png", sizes: "48x48" },
+      { url: `${SITE_CONFIG.seo.icon192}?v=3`, type: "image/png", sizes: "192x192" },
+      { url: `${SITE_CONFIG.seo.icon512}?v=3`, type: "image/png", sizes: "512x512" },
     ],
-    apple: "/apple-touch-icon.png?v=2",
-    shortcut: "/favicon.ico?v=2",
+    apple: "/apple-touch-icon.png?v=3",
+    shortcut: "/favicon.ico?v=3",
   },
 };
 

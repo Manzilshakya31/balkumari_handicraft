@@ -9,7 +9,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { SITE_CONFIG } from "@/data/site-config";
-import DOMPurify from "isomorphic-dompurify";
+import { BlogContent } from "@/components/blog/BlogContent";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -31,6 +31,22 @@ function getSupabase() {
   );
 }
 
+async function getBlogPost(slug: string): Promise<Blog | null> {
+  const { data, error } = await getSupabase()
+    .from("blogs")
+    .select("id, title, slug, content, excerpt, cover_image, created_at")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to fetch blog post", error);
+    return null;
+  }
+
+  return (data as Blog | null) ?? null;
+}
+
 interface BlogPostPageProps {
   params: { slug: string };
 }
@@ -38,14 +54,11 @@ interface BlogPostPageProps {
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
-  const { data } = await getSupabase()
-    .from("blogs")
-    .select("title, slug, excerpt, cover_image")
-    .eq("slug", params.slug)
-    .eq("status", "published")
-    .single();
+  const data = await getBlogPost(params.slug);
 
-  if (!data) return {};
+  if (!data) {
+    return {};
+  }
 
   return {
     title: data.title,
@@ -66,16 +79,9 @@ export async function generateMetadata({
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { data: blog } = await getSupabase()
-    .from("blogs")
-    .select("id, title, slug, content, excerpt, cover_image, created_at")
-    .eq("slug", params.slug)
-    .eq("status", "published")
-    .single();
+  const post = await getBlogPost(params.slug);
 
-  if (!blog) notFound();
-
-  const post = blog as Blog;
+  if (!post) notFound();
 
   const whatsappMessage = encodeURIComponent(
     `Hello, I read your article "${post.title}" and I am interested in your handicrafts.`
@@ -184,22 +190,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
 
           {/* Article content */}
-          <div
-            className="prose prose-stone prose-headings:font-serif
-              prose-headings:text-brand-brown
-              prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3
-              prose-p:text-muted-foreground prose-p:leading-relaxed
-              prose-a:text-brand-maroon prose-a:no-underline
-              hover:prose-a:underline
-              max-w-none"
-            style={{ fontSize: "clamp(0.9rem, 1.5vw, 1rem)" }}
-          >
-<div
-  className="prose prose-stone prose-headings:font-serif\n                prose-headings:text-brand-brown\n                prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3\n                prose-p:text-muted-foreground prose-p:leading-relaxed\n                prose-a:text-brand-maroon prose-a:no-underline\n                hover:prose-a:underline\n                max-w-none"
-  style={{ fontSize: "clamp(0.9rem, 1.5vw, 1rem)" }}
-  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content || "") }}
-/>
-          </div>
+          <BlogContent html={post.content} />
 
           {/* CTA box at end of article */}
           <div className="mt-12 bg-brand-brown rounded-2xl p-8 text-center">

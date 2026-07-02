@@ -39,7 +39,8 @@ export function LocalBusinessSchema() {
     priceRange: "$$",
     currenciesAccepted: "NPR, USD",
     paymentAccepted: "Cash, Bank Transfer",
-    image: `${SITE_CONFIG.domain}/og-image.jpg`,
+    image: `${SITE_CONFIG.domain}${SITE_CONFIG.seo.ogImage}`,
+    logo: `${SITE_CONFIG.domain}${SITE_CONFIG.seo.logo}`,
     hasMap: `https://maps.google.com/?q=${encodeURIComponent(
       `${SITE_CONFIG.businessName}, ${SITE_CONFIG.address.street}, ${SITE_CONFIG.address.city}, Nepal`
     )}`,
